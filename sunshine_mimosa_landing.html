@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sunshine Mimosa - DiTowers</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --gold: #f4d03f;
+            --gold-light: #f9e79f;
+            --gold-dark: #d4ac0d;
+            --black: #0a0a0a;
+            --dark-gray: #1a1a1a;
+            --mid-gray: #2a2a2a;
+            --white: #ffffff;
+            --orange: #e67e22;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--black);
+            color: var(--white);
+            overflow-x: hidden;
+        }
+
+        /* ===== SPLASH SCREEN ===== */
+        #splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center, #1a1500 0%, var(--black) 70%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+
+        #splash-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .sun-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin-bottom: 40px;
+        }
+
+        .sun-core {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle, #f9e79f 0%, #f4d03f 40%, #d4ac0d 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 60px rgba(244, 208, 63, 0.6), 0 0 120px rgba(244, 208, 63, 0.3);
+            animation: sunPulse 3s ease-in-out infinite;
+        }
+
+        .sun-rays {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 200px;
+            animation: rotateRays 20s linear infinite;
+        }
+
+        .sun-ray {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 4px;
+            height: 40px;
+            background: linear-gradient(to bottom, rgba(244, 208, 63, 0.8), transparent);
+            transform-origin: center top;
+            border-radius: 2px;
+        }
+
+        .splash-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            letter-spacing: 8px;
+            color: var(--gold);
+            text-shadow: 0 0 30px rgba(244, 208, 63, 0.5);
+            animation: fadeInUp 1s ease 0.5s both;
+        }
+
+        .splash-subtitle {
+            font-size: 1rem;
+            font-weight: 300;
+            letter-spacing: 4px;
+            color: var(--gold-light);
+            margin-top: 10px;
+            opacity: 0.8;
+            animation: fadeInUp 1s ease 0.8s both;
+        }
+
+        .splash-enter {
+            margin-top: 40px;
+            padding: 12px 40px;
+            background: transparent;
+            border: 2px solid var(--gold);
+            color: var(--gold);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 3px;
+            cursor: pointer;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            animation: fadeInUp 1s ease 1.2s both;
+        }
+
+        .splash-enter:hover {
+            background: var(--gold);
+            color: var(--black);
+            box-shadow: 0 0 30px rgba(244, 208, 63, 0.5);
+        }
+
+        @keyframes sunPulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
+        }
+
+        @keyframes rotateRays {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== NAVIGATION ===== */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(10, 10, 10, 0.85);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(244, 208, 63, 0.1);
+        }
+
+        .nav-logo {
+            font-size: 1.4rem;
+            font-weight: 900;
+            letter-spacing: 4px;
+            color: var(--gold);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 35px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--white);
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gold);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--gold);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* ===== HERO SECTION ===== */
+        #hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 120px 20px 60px;
+            background: radial-gradient(ellipse at 50% 30%, rgba(244, 208, 63, 0.08) 0%, transparent 60%),
+                        linear-gradient(180deg, var(--black) 0%, var(--dark-gray) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            z-index: 2;
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 8vw, 5.5rem);
+            font-weight: 900;
+            letter-spacing: 6px;
+            color: var(--gold);
+            text-shadow: 0 0 40px rgba(244, 208, 63, 0.3);
+            margin-bottom: 25px;
+            line-height: 1.1;
+        }
+
+        .hero-desc {
+            font-size: clamp(1rem, 2.5vw, 1.3rem);
+            font-weight: 300;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.85);
+            max-width: 600px;
+            margin: 0 auto 40px;
+        }
+
+        .hero-cta {
+            display: inline-block;
+            padding: 15px 50px;
+            background: var(--gold);
+            color: var(--black);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.9rem;
+            letter-spacing: 3px;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(244, 208, 63, 0.3);
+        }
+
+        .hero-cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(244, 208, 63, 0.5);
+        }
+
+        /* Floating particles */
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--gold);
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: floatParticle 8s ease-in-out infinite;
+        }
+
+        @keyframes floatParticle {
+            0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
+            10% { opacity: 0.3; }
+            90% { opacity: 0.3; }
+            100% { transform: translateY(-100vh) translateX(50px); opacity: 0; }
+        }
+
+        /* ===== SECTIONS COMMON ===== */
+        section {
+            padding: 100px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .section-title {
+            font-size: clamp(1.8rem, 5vw, 3rem);
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 50px;
+            letter-spacing: 2px;
+        }
+
+        /* ===== SOUNDTRACK SECTION ===== */
+        #soundtrack {
+            background: linear-gradient(180deg, var(--dark-gray) 0%, var(--black) 100%);
+            max-width: 100%;
+            padding: 100px 20px;
+        }
+
+        .soundtrack-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .track-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .track-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px 25px;
+            background: var(--mid-gray);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(244, 208, 63, 0.1);
+        }
+
+        .track-item:hover {
+            background: rgba(244, 208, 63, 0.1);
+            border-color: rgba(244, 208, 63, 0.3);
+            transform: translateX(5px);
+        }
+
+        .track-item.active {
+            background: rgba(244, 208, 63, 0.15);
+            border-color: var(--gold);
+        }
+
+        .track-num {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--gold);
+            min-width: 35px;
+        }
+
+        .track-info {
+            flex: 1;
+        }
+
+        .track-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .track-artist {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .track-play-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--gold);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--black);
+            font-size: 1rem;
+        }
+
+        .track-play-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(244, 208, 63, 0.4);
+        }
+
+        /* ===== AUDIO PLAYER ===== */
+        .audio-player {
+            position: sticky;
+            bottom: 20px;
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(244, 208, 63, 0.2);
+            border-radius: 16px;
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            max-width: 700px;
+            margin: 0 auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .audio-player.hidden {
+            transform: translateY(120%);
+            opacity: 0;
+        }
+
+        .player-cover {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .player-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .player-track-name {
+            font-size: 1rem;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .player-track-artist {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .player-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .player-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--gold);
+            border: none;
+            color: var(--black);
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .player-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(244, 208, 63, 0.4);
+        }
+
+        .progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: rgba(244, 208, 63, 0.2);
+            border-radius: 0 0 16px 16px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: var(--gold);
+            transition: width 0.1s linear;
+        }
+
+        /* ===== GALLERY / EP COVER ===== */
+        #gallery {
+            text-align: center;
+            background: linear-gradient(180deg, var(--black) 0%, var(--dark-gray) 100%);
+            max-width: 100%;
+            padding: 100px 20px;
+        }
+
+        .gallery-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .single-cover-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .single-cover-container img {
+            max-width: 100%;
+            width: 500px;
+            border-radius: 20px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), 0 0 60px rgba(244, 208, 63, 0.1);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .single-cover-container img:hover {
+            transform: scale(1.02) rotate(1deg);
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.7), 0 0 80px rgba(244, 208, 63, 0.2);
+        }
+
+        /* ===== CONTACT / NEWSLETTER ===== */
+        #contact {
+            text-align: center;
+            background: linear-gradient(180deg, var(--dark-gray) 0%, var(--black) 100%);
+            max-width: 100%;
+            padding: 100px 20px;
+        }
+
+        .contact-container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .contact-desc {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 40px;
+            line-height: 1.7;
+        }
+
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .contact-form input {
+            padding: 18px 25px;
+            background: var(--mid-gray);
+            border: 1px solid rgba(244, 208, 63, 0.2);
+            border-radius: 12px;
+            color: var(--white);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .contact-form input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .contact-form input:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 20px rgba(244, 208, 63, 0.15);
+        }
+
+        .submit-btn {
+            padding: 18px 40px;
+            background: var(--gold);
+            color: var(--black);
+            border: none;
+            border-radius: 12px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(244, 208, 63, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .form-message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .form-message.success {
+            display: block;
+            background: rgba(39, 174, 96, 0.2);
+            border: 1px solid rgba(39, 174, 96, 0.4);
+            color: #2ecc71;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            background: var(--black);
+            border-top: 1px solid rgba(244, 208, 63, 0.1);
+        }
+
+        footer p {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.4);
+            letter-spacing: 2px;
+        }
+
+        /* ===== SCROLL ANIMATIONS ===== */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ===== MOBILE RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            nav {
+                padding: 15px 20px;
+            }
+
+            .nav-links {
+                gap: 15px;
+            }
+
+            .nav-links a {
+                font-size: 0.7rem;
+                letter-spacing: 1px;
+            }
+
+            .audio-player {
+                padding: 15px 20px;
+                gap: 12px;
+            }
+
+            .player-cover {
+                width: 45px;
+                height: 45px;
+                font-size: 1.2rem;
+            }
+
+            .player-btn {
+                width: 42px;
+                height: 42px;
+                font-size: 1rem;
+            }
+
+            .track-item {
+                padding: 15px 18px;
+            }
+
+            .splash-title {
+                font-size: 1.8rem;
+                letter-spacing: 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== SPLASH SCREEN ===== -->
+    <div id="splash-screen">
+        <div class="sun-container">
+            <div class="sun-rays">
+                <div class="sun-ray" style="transform: translate(-50%, -50%) rotate(0deg) translateY(-80px);"></div>
+                <div class="sun-ray" style="transform: translate(-50%, -50%) rotate(30deg) translateY(-80px);"></div>
+                <div class="sun-ray" style="transform: translate(-50%, -50%) rotate(60deg) translateY(-80px);"></div>
+                <div class="sun-ray" style="transform: translate(-50%, -50%) rotate(90deg) translateY(-80px);"></div>
+                <div class="sun-ray" style="transform: translate(-50%, -50%) rotate(120deg) translateY(-80px);"></div>
+                <div class="sun-ray" style="transform: translate(-50%, -50%) rotate(150deg) translateY(-80px);"></div>
+                <div class="sun-ray" style="transform: translate(-50%, -50%) rotate(180deg) translateY(-80px);"></div>
+                <div class="sun-ray" style="transform: translate(-50%, -50%) rotate(210deg) translateY(-80px);"></div>
+                <div class="sun-ray" style="transform: translate(-50%, -50%) rotate(240deg) translateY(-80px);"></div>
+                <div class="sun-ray" style="transform: translate(-50%, -50%) rotate(270deg) translateY(-80px);"></div>
+                <div class="sun-ray" style="transform: translate(-50%, -50%) rotate(300deg) translateY(-80px);"></div>
+                <div class="sun-ray" style="transform: translate(-50%, -50%) rotate(330deg) translateY(-80px);"></div>
+            </div>
+            <div class="sun-core"></div>
+        </div>
+        <div class="splash-title">SUNSHINE MIMOSA</div>
+        <div class="splash-subtitle">DiTowers · EP 2026</div>
+        <button class="splash-enter" onclick="enterSite()">ENTRAR</button>
+    </div>
+
+    <!-- ===== NAVIGATION ===== -->
+    <nav>
+        <div class="nav-logo">DITOWERS</div>
+        <ul class="nav-links">
+            <li><a href="#hero">Inicio</a></li>
+            <li><a href="#soundtrack">Soundtrack</a></li>
+            <li><a href="#gallery">EP Cover</a></li>
+            <li><a href="#contact">Newsletter</a></li>
+        </ul>
+    </nav>
+
+    <!-- ===== HERO SECTION ===== -->
+    <section id="hero">
+        <div class="hero-content reveal">
+            <h1 class="hero-title">SUNSHINE MIMOSA</h1>
+            <p class="hero-desc">Sumérgete en una experiencia musical única, nacida de las vivencias y el alma de DiTowers. Donde cada nota cuenta una historia de sol y vida.</p>
+            <a href="#soundtrack" class="hero-cta">ESCUCHAR AHORA</a>
+        </div>
+        <!-- Floating particles -->
+        <div class="particle" style="left: 10%; animation-delay: 0s;"></div>
+        <div class="particle" style="left: 25%; animation-delay: 2s;"></div>
+        <div class="particle" style="left: 40%; animation-delay: 4s;"></div>
+        <div class="particle" style="left: 60%; animation-delay: 1s;"></div>
+        <div class="particle" style="left: 75%; animation-delay: 3s;"></div>
+        <div class="particle" style="left: 90%; animation-delay: 5s;"></div>
+    </section>
+
+    <!-- ===== SOUNDTRACK SECTION ===== -->
+    <section id="soundtrack">
+        <div class="soundtrack-container">
+            <p class="section-label reveal">DiTowers</p>
+            <h2 class="section-title reveal">Soundtrack</h2>
+
+            <div class="track-list">
+                <div class="track-item reveal" onclick="playTrack('track1')" data-track="track1">
+                    <span class="track-num">01</span>
+                    <div class="track-info">
+                        <div class="track-name">¿Y cómo fue bebé?</div>
+                        <div class="track-artist">DiTowers</div>
+                    </div>
+                    <button class="track-play-btn" onclick="event.stopPropagation(); playTrack('track1')">
+                        ▶
+                    </button>
+                </div>
+                <div class="track-item reveal" onclick="playTrack('track2')" data-track="track2">
+                    <span class="track-num">02</span>
+                    <div class="track-info">
+                        <div class="track-name">Sunshine Mimosa</div>
+                        <div class="track-artist">DiTowers</div>
+                    </div>
+                    <button class="track-play-btn" onclick="event.stopPropagation(); playTrack('track2')">
+                        ▶
+                    </button>
+                </div>
+                <div class="track-item reveal" onclick="playTrack('track3')" data-track="track3">
+                    <span class="track-num">03</span>
+                    <div class="track-info">
+                        <div class="track-name">Terminé Así</div>
+                        <div class="track-artist">DiTowers</div>
+                    </div>
+                    <button class="track-play-btn" onclick="event.stopPropagation(); playTrack('track3')">
+                        ▶
+                    </button>
+                </div>
+            </div>
+
+            <!-- Audio Player -->
+            <div class="audio-player hidden" id="audioPlayer">
+                <div class="player-cover">☀</div>
+                <div class="player-info">
+                    <div class="player-track-name" id="playerTrackName">Selecciona un track</div>
+                    <div class="player-track-artist" id="playerTrackArtist">DiTowers · Preview 30s</div>
+                </div>
+                <div class="player-controls">
+                    <button class="player-btn" id="playPauseBtn" onclick="togglePlay()">▶</button>
+                    <button class="player-btn" style="background: transparent; border: 2px solid var(--gold); color: var(--gold); font-size: 0.9rem;" onclick="stopTrack()">■</button>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== GALLERY / EP COVER ===== -->
+    <section id="gallery">
+        <div class="gallery-container">
+            <p class="section-label reveal">DiTowers</p>
+            <h2 class="section-title reveal">Sunshine Mimosa</h2>
+            <div class="single-cover-container reveal">
+                <img src="cover.jpg" alt="Sunshine Mimosa EP Cover">
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== CONTACT / NEWSLETTER ===== -->
+    <section id="contact">
+        <div class="contact-container">
+            <p class="section-label reveal">Comunidad</p>
+            <h2 class="section-title reveal">Únete a la experiencia</h2>
+            <p class="contact-desc reveal">Registra tu email para recibir noticias exclusivas, contenido detrás de cámaras y próximos lanzamientos de DiTowers.</p>
+            <!-- BREVO FORM -->
+            <form class="contact-form reveal" 
+                  action="https://3e6f249b.sibforms.com/serve/MUIFABUpmOijhVTFHG7eeP4g-S8l0U29xEEqEKmmkUpsO_SnJSttwUWAwjnYA6eHc9cVeqworfGKkD8XVQqcsZGCjE8nJfnSLF3dw6S_Ioih0CFzV7be9HcheO5ltHoJtjphOfGJ1MJMfvoMVkc-NA1F9FMMfTSrrgXlMo0LAYPcvQf4jRSl5iTMWd3WnaQQ21nV7n10EoDDH-Oezw==" 
+                  method="post" 
+                  id="sib-form" 
+                  target="_blank"
+                  onsubmit="handleSubscribe(event)">
+                <input type="email" 
+                       name="EMAIL" 
+                       id="sib-email" 
+                       placeholder="Tu correo electrónico" 
+                       required>
+                <button type="submit" class="submit-btn">SUSCRIBIRME</button>
+            </form>
+            <div class="form-message" id="formMessage"></div>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer>
+        <p>© 2026 DITOWERS · SUNSHINE MIMOSA · TODOS LOS DERECHOS RESERVADOS</p>
+    </footer>
+
+    <!-- ===== JAVASCRIPT ===== -->
+    <script>
+        // ===== SPLASH SCREEN =====
+        function enterSite() {
+            const splash = document.getElementById('splash-screen');
+            splash.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        // ===== AUDIO PLAYER =====
+        let currentAudio = null;
+        let isPlaying = false;
+        let currentTrackId = null;
+        let progressInterval = null;
+        const PREVIEW_DURATION = 30; // 30 segundos de preview
+
+        // URLs de los tracks (mismo directorio que el HTML)
+        const trackData = {
+            'track1': {
+                url: 'track1_como_fue.wav',
+                name: '¿Y cómo fue bebé?',
+                artist: 'DiTowers'
+            },
+            'track2': {
+                url: 'track2_sunshine.wav',
+                name: 'Sunshine Mimosa',
+                artist: 'DiTowers'
+            },
+            'track3': {
+                url: 'track3_termine.wav',
+                name: 'Terminé Así',
+                artist: 'DiTowers'
+            }
+        };
+
+        function playTrack(trackId) {
+            const player = document.getElementById('audioPlayer');
+            const trackNameEl = document.getElementById('playerTrackName');
+            const artistEl = document.getElementById('playerTrackArtist');
+            const playBtn = document.getElementById('playPauseBtn');
+            const progressFill = document.getElementById('progressFill');
+            const track = trackData[trackId];
+
+            if (!track) return;
+
+            // Si ya está reproduciendo este mismo track, hacer toggle
+            if (currentTrackId === trackId && currentAudio) {
+                togglePlay();
+                return;
+            }
+
+            // DETENER CUALQUIER TRACK ANTERIOR
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+                currentAudio = null;
+            }
+            clearInterval(progressInterval);
+
+            // Actualizar info del reproductor
+            trackNameEl.textContent = track.name;
+            artistEl.textContent = track.artist + ' · Preview 30s';
+
+            // Mostrar reproductor
+            player.classList.remove('hidden');
+
+            // Marcar track activo en la lista
+            document.querySelectorAll('.track-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector(`[data-track="${trackId}"]`)?.classList.add('active');
+
+            // Crear nuevo audio
+            currentTrackId = trackId;
+            currentAudio = new Audio(track.url);
+
+            // Configurar eventos del audio
+            currentAudio.addEventListener('timeupdate', updateProgress);
+            currentAudio.addEventListener('ended', onTrackEnded);
+            currentAudio.addEventListener('loadedmetadata', function() {
+                // Asegurar que empiece desde el principio
+                currentAudio.currentTime = 0;
+            });
+
+            // Reproducir
+            currentAudio.play().then(() => {
+                isPlaying = true;
+                playBtn.textContent = '⏸';
+            }).catch(err => {
+                console.error('Error reproduciendo audio:', err);
+                trackNameEl.textContent = 'Error al cargar el audio';
+            });
+        }
+
+        function updateProgress() {
+            if (!currentAudio) return;
+
+            const progressFill = document.getElementById('progressFill');
+            const current = currentAudio.currentTime;
+
+            // Calcular progreso basado en 30 segundos (no en la duración total)
+            const progress = Math.min((current / PREVIEW_DURATION) * 100, 100);
+            progressFill.style.width = progress + '%';
+
+            // Auto-stop a los 30 segundos
+            if (current >= PREVIEW_DURATION) {
+                stopTrack();
+            }
+        }
+
+        function onTrackEnded() {
+            stopTrack();
+        }
+
+        function togglePlay() {
+            const playBtn = document.getElementById('playPauseBtn');
+
+            if (!currentAudio || !currentTrackId) return;
+
+            if (isPlaying) {
+                currentAudio.pause();
+                isPlaying = false;
+                playBtn.textContent = '▶';
+            } else {
+                // Si ya pasó de 30s, reiniciar
+                if (currentAudio.currentTime >= PREVIEW_DURATION) {
+                    currentAudio.currentTime = 0;
+                }
+                currentAudio.play();
+                isPlaying = true;
+                playBtn.textContent = '⏸';
+            }
+        }
+
+        function stopTrack() {
+            const player = document.getElementById('audioPlayer');
+            const playBtn = document.getElementById('playPauseBtn');
+            const progressFill = document.getElementById('progressFill');
+            const trackNameEl = document.getElementById('playerTrackName');
+
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+                currentAudio.removeEventListener('timeupdate', updateProgress);
+                currentAudio.removeEventListener('ended', onTrackEnded);
+                currentAudio = null;
+            }
+
+            clearInterval(progressInterval);
+            progressFill.style.width = '0%';
+            isPlaying = false;
+            currentTrackId = null;
+            playBtn.textContent = '▶';
+            trackNameEl.textContent = 'Selecciona un track';
+
+            document.querySelectorAll('.track-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // Ocultar reproductor después de un momento
+            setTimeout(() => {
+                player.classList.add('hidden');
+            }, 300);
+        }
+
+        // ===== NEWSLETTER FORM =====
+        function handleSubscribe(event) {
+            const messageEl = document.getElementById('formMessage');
+            const emailInput = document.getElementById('mce-EMAIL');
+
+            // Mostrar mensaje de éxito inmediatamente
+            messageEl.textContent = '¡Gracias por suscribirte! Pronto recibirás noticias exclusivas de DiTowers.';
+            messageEl.className = 'form-message success';
+
+            // Limpiar el campo después de un momento
+            setTimeout(() => {
+                emailInput.value = '';
+            }, 100);
+
+            // El formulario se envía normalmente a Mailchimp
+            // No hacemos preventDefault para que Mailchimp reciba los datos
+            console.log('Nueva suscripción enviada a Mailchimp');
+        }
+
+        // ===== SCROLL REVEAL =====
+        function revealOnScroll() {
+            const reveals = document.querySelectorAll('.reveal');
+            const windowHeight = window.innerHeight;
+            const elementVisible = 100;
+
+            reveals.forEach(reveal => {
+                const elementTop = reveal.getBoundingClientRect().top;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveal.classList.add('visible');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', revealOnScroll);
+        window.addEventListener('load', revealOnScroll);
+
+        // ===== SMOOTH SCROLL =====
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // ===== NAV BACKGROUND ON SCROLL =====
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                nav.style.background = 'rgba(10, 10, 10, 0.95)';
+            } else {
+                nav.style.background = 'rgba(10, 10, 10, 0.85)';
+            }
+        });
+    </script>
+</body>
+</html>
