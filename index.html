@@ -606,6 +606,28 @@
             100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
         }
 
+        /* ===== LLUVIA DE EMOJIS (tracks con lluvia) ===== */
+        .emoji-rain {
+            position: fixed;
+            top: -10vh;
+            pointer-events: none;
+            z-index: 60;
+            opacity: 0.95;
+            text-shadow: 0 0 12px rgba(244, 208, 63, 0.45);
+            animation-name: rainFall;
+            animation-timing-function: linear;
+            animation-fill-mode: forwards;
+            will-change: transform;
+        }
+
+        @keyframes rainFall {
+            0% { transform: translate3d(0, 0, 0) rotate(-8deg); }
+            25% { transform: translate3d(var(--sway, 20px), 30vh, 0) rotate(8deg); }
+            50% { transform: translate3d(calc(var(--sway, 20px) * -1), 58vh, 0) rotate(-8deg); }
+            75% { transform: translate3d(var(--sway, 20px), 85vh, 0) rotate(8deg); }
+            100% { transform: translate3d(0, 118vh, 0) rotate(-4deg); }
+        }
+
         /* ===== GALLERY / EP COVER ===== */
         #gallery {
             text-align: center;
@@ -827,10 +849,10 @@
             <h2 class="section-title reveal">Soundtrack</h2>
 
             <div class="track-list">
-                <div class="track-item reveal" data-track="0" role="button" tabindex="0" aria-label="Reproducir ¿Y cómo fue bebé?">
+                <div class="track-item reveal" data-track="0" role="button" tabindex="0" aria-label="Reproducir como fue bb?">
                     <span class="track-num"><span class="num-text">01</span><span class="eq"><i></i><i></i><i></i></span></span>
                     <div class="track-info">
-                        <div class="track-name">¿Y cómo fue bebé?</div>
+                        <div class="track-name">como fue bb?</div>
                         <div class="track-artist">DiTowers</div>
                     </div>
                     <span class="track-duration">0:30</span>
@@ -943,6 +965,8 @@
 
         // ===== FLOATING PARTICLES SYSTEM =====
         let particleInterval = null;
+        let rainInterval = null;
+        let rainSession = 0;
         let activeParticles = [];
 
         const trackParticles = [
@@ -952,6 +976,7 @@
         ];
 
         function clearFloatingParticles() {
+            rainSession++; // invalida ráfagas de lluvia pendientes del track anterior
             activeParticles.forEach(p => {
                 if (p.parentNode) p.parentNode.removeChild(p);
             });
@@ -963,6 +988,10 @@
             if (particleInterval) {
                 clearInterval(particleInterval);
                 particleInterval = null;
+            }
+            if (rainInterval) {
+                clearInterval(rainInterval);
+                rainInterval = null;
             }
         }
 
@@ -985,15 +1014,67 @@
             }, 6000);
         }
 
+        // ===== LLUVIA DE EMOJIS =====
+        // Tracks con lluvia en vez de partículas flotantes:
+        // 0 "como fue bb?" -> copas de vino, 1 "Sunshine Mimosa" -> abejas de miel
+        const rainSets = {
+            0: ['🍷', '🍷', '🍷', '🍷', '🍷'],
+            1: ['🐝', '🐝', '🐝', '🐝', '🍯']
+        };
+
+        function spawnRainDrop(trackIndex) {
+            const set = rainSets[trackIndex];
+            if (!set || currentIndex !== trackIndex) return;
+            const el = document.createElement('div');
+            el.className = 'emoji-rain';
+            el.textContent = set[Math.floor(Math.random() * set.length)];
+            el.style.left = Math.random() * 100 + 'vw';
+            el.style.fontSize = (Math.random() * 1.4 + 1.3) + 'rem';
+            const dur = Math.random() * 2 + 2.8;
+            el.style.animationDuration = dur + 's';
+            el.style.setProperty('--sway', (Math.random() * 50 + 15) + 'px');
+            document.body.appendChild(el);
+            activeParticles.push(el);
+
+            setTimeout(() => {
+                if (el.parentNode) el.parentNode.removeChild(el);
+                activeParticles = activeParticles.filter(p => p !== el);
+            }, dur * 1000 + 300);
+        }
+
+        function startRain(trackIndex) {
+            pauseParticleSpawning();
+            const session = rainSession;
+            // Ráfaga inicial (solo si sigue sonando ESTE track)
+            for (let i = 0; i < 16; i++) {
+                setTimeout(() => {
+                    if (session === rainSession && !audio.paused && currentIndex === trackIndex) {
+                        spawnRainDrop(trackIndex);
+                    }
+                }, i * 70);
+            }
+            rainInterval = setInterval(() => spawnRainDrop(trackIndex), 160);
+        }
+
+        function resumeRain(trackIndex) {
+            if (rainInterval) return;
+            rainInterval = setInterval(() => spawnRainDrop(trackIndex), 160);
+        }
+
         function startParticles(trackIndex) {
             clearFloatingParticles();
+            if (rainSets[trackIndex]) {
+                startRain(trackIndex);
+                return;
+            }
             const emojis = trackParticles[trackIndex];
             if (!emojis) return;
 
-            // Spawn initial batch
+            // Spawn initial batch (solo si sigue sonando ESTE track)
+            const session = rainSession;
             for (let i = 0; i < 8; i++) {
                 setTimeout(() => {
-                    if (!audio.paused) {
+                    if (session === rainSession && !audio.paused && currentIndex === trackIndex) {
                         const emoji = emojis[Math.floor(Math.random() * emojis.length)];
                         spawnParticle(emoji);
                     }
@@ -1008,6 +1089,10 @@
         }
 
         function resumeParticles(trackIndex) {
+            if (rainSets[trackIndex]) {
+                resumeRain(trackIndex);
+                return;
+            }
             const emojis = trackParticles[trackIndex];
             if (!emojis || particleInterval) return;
             particleInterval = setInterval(() => {
@@ -1021,7 +1106,7 @@
         // desde los eventos reales del audio (play/pause/ended), así el
         // tiempo, el progreso y los botones NUNCA se desalinean.
         const tracks = [
-            { src: 'track1_como_fue.wav', name: '¿Y cómo fue bebé?', artist: 'DiTowers' },
+            { src: 'track1_como_fue.wav', name: 'como fue bb?', artist: 'DiTowers' },
             { src: 'track2_sunshine.wav',  name: 'Sunshine Mimosa',  artist: 'DiTowers' },
             { src: 'track3_termine.wav',   name: 'Terminé Así',      artist: 'DiTowers' }
         ];
