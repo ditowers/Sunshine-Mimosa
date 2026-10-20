@@ -34,6 +34,10 @@
             overflow-x: hidden;
         }
 
+        body.locked {
+            overflow: hidden;
+        }
+
         /* ===== SPLASH SCREEN ===== */
         #splash-screen {
             position: fixed;
@@ -306,10 +310,44 @@
             font-weight: 700;
             color: var(--gold);
             min-width: 35px;
+            display: flex;
+            align-items: center;
         }
+
+        /* Mini ecualizador del track activo */
+        .eq {
+            display: none;
+            align-items: flex-end;
+            gap: 3px;
+            height: 16px;
+        }
+
+        .eq i {
+            width: 3.5px;
+            height: 100%;
+            background: var(--gold);
+            border-radius: 2px;
+            transform-origin: bottom;
+            animation: eqBounce 0.9s ease-in-out infinite;
+        }
+
+        .eq i:nth-child(2) { animation-delay: 0.25s; }
+        .eq i:nth-child(3) { animation-delay: 0.5s; }
+
+        @keyframes eqBounce {
+            0%, 100% { transform: scaleY(0.3); }
+            50% { transform: scaleY(1); }
+        }
+
+        .track-item.playing .num-text { display: none; }
+        .track-item.playing .eq { display: flex; }
+        .track-item.active:not(.playing) .eq { display: flex; }
+        .track-item.active:not(.playing) .eq i { animation-play-state: paused; transform: scaleY(0.45); }
+        .track-item.active:not(.playing) .num-text { display: none; }
 
         .track-info {
             flex: 1;
+            min-width: 0;
         }
 
         .track-name {
@@ -321,6 +359,19 @@
         .track-artist {
             font-size: 0.85rem;
             color: rgba(255, 255, 255, 0.6);
+        }
+
+        .track-duration {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 1px;
+            min-width: 38px;
+            text-align: right;
+        }
+
+        .track-item.active .track-duration {
+            color: var(--gold-light);
         }
 
         .track-play-btn {
@@ -336,6 +387,7 @@
             transition: all 0.3s ease;
             color: var(--black);
             font-size: 1rem;
+            flex-shrink: 0;
         }
 
         .track-play-btn:hover {
@@ -351,20 +403,26 @@
             backdrop-filter: blur(20px);
             border: 1px solid rgba(244, 208, 63, 0.2);
             border-radius: 16px;
-            padding: 20px 30px;
+            padding: 20px 30px 26px;
             display: flex;
             align-items: center;
             gap: 20px;
             max-width: 700px;
             margin: 0 auto;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-            transition: transform 0.3s ease, opacity 0.3s ease;
+            transition: transform 0.3s ease, opacity 0.3s ease, border-color 0.4s ease, box-shadow 0.4s ease;
             z-index: 100;
         }
 
         .audio-player.hidden {
             transform: translateY(120%);
             opacity: 0;
+            pointer-events: none;
+        }
+
+        .audio-player.playing {
+            border-color: rgba(244, 208, 63, 0.55);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 35px rgba(244, 208, 63, 0.18);
         }
 
         .player-cover {
@@ -377,6 +435,14 @@
             justify-content: center;
             font-size: 1.5rem;
             flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .player-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
         }
 
         .player-info {
@@ -397,10 +463,22 @@
             color: rgba(255, 255, 255, 0.6);
         }
 
+        .player-time {
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            color: rgba(255, 255, 255, 0.55);
+            margin-top: 3px;
+        }
+
+        .player-time .t-cur {
+            color: var(--gold-light);
+        }
+
         .player-controls {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
         }
 
         .player-btn {
@@ -416,6 +494,8 @@
             align-items: center;
             justify-content: center;
             transition: all 0.2s ease;
+            position: relative;
+            flex-shrink: 0;
         }
 
         .player-btn:hover {
@@ -423,22 +503,89 @@
             box-shadow: 0 0 20px rgba(244, 208, 63, 0.4);
         }
 
+        .player-btn.ghost {
+            width: 44px;
+            height: 44px;
+            background: transparent;
+            border: 2px solid var(--gold);
+            color: var(--gold);
+            font-size: 0.95rem;
+        }
+
+        .player-btn.ghost:hover {
+            background: rgba(244, 208, 63, 0.12);
+        }
+
+        .player-btn.loading {
+            color: transparent;
+            pointer-events: none;
+        }
+
+        .player-btn.loading::after {
+            content: '';
+            position: absolute;
+            inset: 13px;
+            border: 3px solid rgba(0, 0, 0, 0.25);
+            border-top-color: var(--black);
+            border-radius: 50%;
+            animation: spinRing 0.7s linear infinite;
+        }
+
+        @keyframes spinRing {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Barra de progreso: visible, clickeable y arrastrable */
         .progress-bar {
             position: absolute;
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 3px;
+            height: 14px;
+            border-radius: 0 0 16px 16px;
+            cursor: pointer;
+            touch-action: none;
+        }
+
+        .progress-bar::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 5px;
             background: rgba(244, 208, 63, 0.2);
             border-radius: 0 0 16px 16px;
-            overflow: hidden;
         }
 
         .progress-fill {
-            height: 100%;
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            height: 5px;
             width: 0%;
             background: var(--gold);
-            transition: width 0.1s linear;
+            border-radius: 0 0 0 16px;
+            pointer-events: none;
+        }
+
+        .progress-knob {
+            position: absolute;
+            bottom: 2.5px;
+            left: 0%;
+            width: 13px;
+            height: 13px;
+            background: var(--gold);
+            border-radius: 50%;
+            transform: translate(-50%, 50%);
+            box-shadow: 0 0 10px rgba(244, 208, 63, 0.7);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            pointer-events: none;
+        }
+
+        .audio-player.has-track .progress-knob {
+            opacity: 1;
         }
 
         /* ===== FLOATING EMOJI PARTICLES ===== */
@@ -604,7 +751,7 @@
         /* ===== MOBILE RESPONSIVE ===== */
         @media (max-width: 768px) {
             .audio-player {
-                padding: 15px 20px;
+                padding: 15px 20px 22px;
                 gap: 12px;
             }
 
@@ -620,8 +767,21 @@
                 font-size: 1rem;
             }
 
+            .player-btn.ghost {
+                width: 38px;
+                height: 38px;
+            }
+
+            .player-time {
+                font-size: 0.68rem;
+            }
+
             .track-item {
                 padding: 15px 18px;
+            }
+
+            .track-duration {
+                display: none;
             }
 
             .splash-title {
@@ -631,7 +791,7 @@
         }
     </style>
 </head>
-<body>
+<body class="locked">
 
     <!-- ===== SPLASH SCREEN ===== -->
     <div id="splash-screen">
@@ -667,51 +827,51 @@
             <h2 class="section-title reveal">Soundtrack</h2>
 
             <div class="track-list">
-                <div class="track-item reveal" onclick="playTrack('track1')" data-track="track1">
-                    <span class="track-num">01</span>
+                <div class="track-item reveal" data-track="0" role="button" tabindex="0" aria-label="Reproducir ¿Y cómo fue bebé?">
+                    <span class="track-num"><span class="num-text">01</span><span class="eq"><i></i><i></i><i></i></span></span>
                     <div class="track-info">
                         <div class="track-name">¿Y cómo fue bebé?</div>
                         <div class="track-artist">DiTowers</div>
                     </div>
-                    <button class="track-play-btn" onclick="event.stopPropagation(); playTrack('track1')">
-                        ▶
-                    </button>
+                    <span class="track-duration">0:30</span>
+                    <button class="track-play-btn" data-play-btn="0" aria-label="Play/Pause">▶</button>
                 </div>
-                <div class="track-item reveal" onclick="playTrack('track2')" data-track="track2">
-                    <span class="track-num">02</span>
+                <div class="track-item reveal" data-track="1" role="button" tabindex="0" aria-label="Reproducir Sunshine Mimosa">
+                    <span class="track-num"><span class="num-text">02</span><span class="eq"><i></i><i></i><i></i></span></span>
                     <div class="track-info">
                         <div class="track-name">Sunshine Mimosa</div>
                         <div class="track-artist">DiTowers</div>
                     </div>
-                    <button class="track-play-btn" onclick="event.stopPropagation(); playTrack('track2')">
-                        ▶
-                    </button>
+                    <span class="track-duration">0:30</span>
+                    <button class="track-play-btn" data-play-btn="1" aria-label="Play/Pause">▶</button>
                 </div>
-                <div class="track-item reveal" onclick="playTrack('track3')" data-track="track3">
-                    <span class="track-num">03</span>
+                <div class="track-item reveal" data-track="2" role="button" tabindex="0" aria-label="Reproducir Terminé Así">
+                    <span class="track-num"><span class="num-text">03</span><span class="eq"><i></i><i></i><i></i></span></span>
                     <div class="track-info">
                         <div class="track-name">Terminé Así</div>
                         <div class="track-artist">DiTowers</div>
                     </div>
-                    <button class="track-play-btn" onclick="event.stopPropagation(); playTrack('track3')">
-                        ▶
-                    </button>
+                    <span class="track-duration">0:30</span>
+                    <button class="track-play-btn" data-play-btn="2" aria-label="Play/Pause">▶</button>
                 </div>
             </div>
 
             <!-- Audio Player -->
             <div class="audio-player hidden" id="audioPlayer">
-                <div class="player-cover">☀</div>
+                <div class="player-cover"><img src="cover.jpg" alt="Sunshine Mimosa"></div>
                 <div class="player-info">
                     <div class="player-track-name" id="playerTrackName">Selecciona un track</div>
                     <div class="player-track-artist" id="playerTrackArtist">DiTowers · Preview 30s</div>
+                    <div class="player-time"><span class="t-cur" id="timeCurrent">0:00</span> / <span id="timeDuration">0:30</span></div>
                 </div>
                 <div class="player-controls">
-                    <button class="player-btn" id="playPauseBtn" onclick="togglePlay()">▶</button>
-                    <button class="player-btn" style="background: transparent; border: 2px solid var(--gold); color: var(--gold); font-size: 0.9rem;" onclick="stopTrack()">■</button>
+                    <button class="player-btn ghost" id="prevBtn" aria-label="Anterior">⏮</button>
+                    <button class="player-btn" id="playPauseBtn" aria-label="Play/Pause">▶</button>
+                    <button class="player-btn ghost" id="nextBtn" aria-label="Siguiente">⏭</button>
                 </div>
-                <div class="progress-bar">
+                <div class="progress-bar" id="progressBar" role="slider" aria-label="Progreso" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
                     <div class="progress-fill" id="progressFill"></div>
+                    <div class="progress-knob" id="progressKnob"></div>
                 </div>
             </div>
         </div>
@@ -735,16 +895,16 @@
             <h2 class="section-title reveal">Únete a la experiencia</h2>
             <p class="contact-desc reveal">Registra tu email para recibir noticias exclusivas, contenido detrás de cámaras y próximos lanzamientos de DiTowers.</p>
             <!-- BREVO FORM -->
-            <form class="contact-form reveal" 
-                  action="https://3e6f249b.sibforms.com/serve/MUIFABUpmOijhVTFHG7eeP4g-S8l0U29xEEqEKmmkUpsO_SnJSttwUWAwjnYA6eHc9cVeqworfGKkD8XVQqcsZGCjE8nJfnSLF3dw6S_Ioih0CFzV7be9HcheO5ltHoJtjphOfGJ1MJMfvoMVkc-NA1F9FMMfTSrrgXlMo0LAYPcvQf4jRSl5iTMWd3WnaQQ21nV7n10EoDDH-Oezw==" 
-                  method="post" 
-                  id="sib-form" 
+            <form class="contact-form reveal"
+                  action="https://3e6f249b.sibforms.com/serve/MUIFABUpmOijhVTFHG7eeP4g-S8l0U29xEEqEKmmkUpsO_SnJSttwUWAwjnYA6eHc9cVeqworfGKkD8XVQqcsZGCjE8nJfnSLF3dw6S_Ioih0CFzV7be9HcheO5ltHoJtjphOfGJ1MJMfvoMVkc-NA1F9FMMfTSrrgXlMo0LAYPcvQf4jRSl5iTMWd3WnaQQ21nV7n10EoDDH-Oezw=="
+                  method="post"
+                  id="sib-form"
                   target="_blank"
                   onsubmit="handleSubscribe(event)">
-                <input type="email" 
-                       name="EMAIL" 
-                       id="sib-email" 
-                       placeholder="Tu correo electrónico" 
+                <input type="email"
+                       name="EMAIL"
+                       id="sib-email"
+                       placeholder="Tu correo electrónico"
                        required>
                 <button type="submit" class="submit-btn">SUSCRIBIRME</button>
             </form>
@@ -777,6 +937,7 @@
         function enterSite() {
             const splash = document.getElementById('splash-screen');
             splash.classList.add('hidden');
+            document.body.classList.remove('locked');
             document.body.style.overflow = 'auto';
         }
 
@@ -784,17 +945,21 @@
         let particleInterval = null;
         let activeParticles = [];
 
-        const trackParticles = {
-            'track1': ['🥂', '🍾', '🍷', '🥃'],
-            'track2': ['🐝', '🐝', '🐝', '🍯'],
-            'track3': ['🌻', '🌻', '🌻', '🌼']
-        };
+        const trackParticles = [
+            ['🥂', '🍾', '🍷', '🥃'],
+            ['🐝', '🐝', '🐝', '🍯'],
+            ['🌻', '🌻', '🌻', '🌼']
+        ];
 
         function clearFloatingParticles() {
             activeParticles.forEach(p => {
                 if (p.parentNode) p.parentNode.removeChild(p);
             });
             activeParticles = [];
+            pauseParticleSpawning();
+        }
+
+        function pauseParticleSpawning() {
             if (particleInterval) {
                 clearInterval(particleInterval);
                 particleInterval = null;
@@ -820,16 +985,18 @@
             }, 6000);
         }
 
-        function startParticles(trackId) {
+        function startParticles(trackIndex) {
             clearFloatingParticles();
-            const emojis = trackParticles[trackId];
+            const emojis = trackParticles[trackIndex];
             if (!emojis) return;
 
             // Spawn initial batch
             for (let i = 0; i < 8; i++) {
                 setTimeout(() => {
-                    const emoji = emojis[Math.floor(Math.random() * emojis.length)];
-                    spawnParticle(emoji);
+                    if (!audio.paused) {
+                        const emoji = emojis[Math.floor(Math.random() * emojis.length)];
+                        spawnParticle(emoji);
+                    }
                 }, i * 300);
             }
 
@@ -840,172 +1007,279 @@
             }, 800);
         }
 
-        // ===== AUDIO PLAYER =====
-        let currentAudio = null;
-        let isPlaying = false;
-        let currentTrackId = null;
-        let progressInterval = null;
-        const PREVIEW_DURATION = 30; // 30 segundos de preview
+        function resumeParticles(trackIndex) {
+            const emojis = trackParticles[trackIndex];
+            if (!emojis || particleInterval) return;
+            particleInterval = setInterval(() => {
+                const emoji = emojis[Math.floor(Math.random() * emojis.length)];
+                spawnParticle(emoji);
+            }, 800);
+        }
 
-        // URLs de los tracks (mismo directorio que el HTML)
-        const trackData = {
-            'track1': {
-                url: 'track1_como_fue.wav',
-                name: '¿Y cómo fue bebé?',
-                artist: 'DiTowers'
-            },
-            'track2': {
-                url: 'track2_sunshine.wav',
-                name: 'Sunshine Mimosa',
-                artist: 'DiTowers'
-            },
-            'track3': {
-                url: 'track3_termine.wav',
-                name: 'Terminé Así',
-                artist: 'DiTowers'
+        // ===== AUDIO PLAYER (motor nuevo) =====
+        // Un solo elemento <audio> persistente: la interfaz se sincroniza
+        // desde los eventos reales del audio (play/pause/ended), así el
+        // tiempo, el progreso y los botones NUNCA se desalinean.
+        const tracks = [
+            { src: 'track1_como_fue.wav', name: '¿Y cómo fue bebé?', artist: 'DiTowers' },
+            { src: 'track2_sunshine.wav',  name: 'Sunshine Mimosa',  artist: 'DiTowers' },
+            { src: 'track3_termine.wav',   name: 'Terminé Así',      artist: 'DiTowers' }
+        ];
+
+        const audio = new Audio();
+        audio.preload = 'auto';
+
+        let currentIndex = -1;
+        let rafId = null;
+        let seeking = false;
+        const prefetched = new Set();
+
+        const playerEl      = document.getElementById('audioPlayer');
+        const trackNameEl   = document.getElementById('playerTrackName');
+        const artistEl      = document.getElementById('playerTrackArtist');
+        const playPauseBtn  = document.getElementById('playPauseBtn');
+        const prevBtn       = document.getElementById('prevBtn');
+        const nextBtn       = document.getElementById('nextBtn');
+        const progressBar   = document.getElementById('progressBar');
+        const progressFill  = document.getElementById('progressFill');
+        const progressKnob  = document.getElementById('progressKnob');
+        const timeCurrentEl = document.getElementById('timeCurrent');
+        const timeDurationEl= document.getElementById('timeDuration');
+        const rowEls        = Array.from(document.querySelectorAll('.track-item'));
+        const rowBtns       = Array.from(document.querySelectorAll('[data-play-btn]'));
+
+        function fmt(t) {
+            if (!isFinite(t) || t < 0) t = 0;
+            const m = Math.floor(t / 60);
+            const s = Math.floor(t % 60);
+            return m + ':' + String(s).padStart(2, '0');
+        }
+
+        function render() {
+            const dur = audio.duration;
+            const cur = audio.currentTime || 0;
+            const pct = (isFinite(dur) && dur > 0) ? Math.min((cur / dur) * 100, 100) : 0;
+            progressFill.style.width = pct + '%';
+            progressKnob.style.left = pct + '%';
+            progressBar.setAttribute('aria-valuenow', Math.round(pct));
+            timeCurrentEl.textContent = fmt(cur);
+            if (isFinite(dur) && dur > 0) timeDurationEl.textContent = fmt(dur);
+        }
+
+        function rafLoop() {
+            render();
+            if (!audio.paused && !audio.ended) {
+                rafId = requestAnimationFrame(rafLoop);
+            } else {
+                rafId = null;
             }
-        };
+        }
 
-        function playTrack(trackId) {
-            const player = document.getElementById('audioPlayer');
-            const trackNameEl = document.getElementById('playerTrackName');
-            const artistEl = document.getElementById('playerTrackArtist');
-            const playBtn = document.getElementById('playPauseBtn');
-            const progressFill = document.getElementById('progressFill');
-            const track = trackData[trackId];
+        function startRaf() {
+            if (rafId === null) rafId = requestAnimationFrame(rafLoop);
+        }
 
-            if (!track) return;
+        function syncUI() {
+            const playing = !audio.paused && !audio.ended;
+            playPauseBtn.textContent = playing ? '⏸' : '▶';
+            playerEl.classList.toggle('playing', playing);
+            rowEls.forEach((row, i) => {
+                row.classList.toggle('active', i === currentIndex);
+                row.classList.toggle('playing', i === currentIndex && playing);
+            });
+            rowBtns.forEach((btn, i) => {
+                btn.textContent = (i === currentIndex && playing) ? '⏸' : '▶';
+            });
+        }
 
-            // Si ya está reproduciendo este mismo track, hacer toggle
-            if (currentTrackId === trackId && currentAudio) {
+        function setLoading(on) {
+            playPauseBtn.classList.toggle('loading', on);
+        }
+
+        function updateMediaSession() {
+            if (!('mediaSession' in navigator) || currentIndex < 0) return;
+            const t = tracks[currentIndex];
+            navigator.mediaSession.metadata = new MediaMetadata({
+                title: t.name,
+                artist: t.artist,
+                album: 'Sunshine Mimosa',
+                artwork: [{ src: 'cover.jpg', sizes: '512x512', type: 'image/jpeg' }]
+            });
+        }
+
+        function prefetchNext() {
+            const n = currentIndex + 1;
+            if (n >= tracks.length || prefetched.has(n)) return;
+            prefetched.add(n);
+            const link = document.createElement('link');
+            link.rel = 'prefetch';
+            link.href = tracks[n].src;
+            document.head.appendChild(link);
+        }
+
+        function loadTrack(index, autoplay) {
+            if (index < 0 || index >= tracks.length) return;
+            const wasPlaying = !audio.paused;
+            currentIndex = index;
+            const t = tracks[index];
+
+            clearFloatingParticles();
+            trackNameEl.textContent = t.name;
+            artistEl.textContent = t.artist + ' · Preview 30s';
+            timeCurrentEl.textContent = '0:00';
+            timeDurationEl.textContent = '0:30';
+            progressFill.style.width = '0%';
+            progressKnob.style.left = '0%';
+
+            playerEl.classList.remove('hidden');
+            playerEl.classList.add('has-track');
+
+            audio.src = t.src;
+            audio.load();
+            updateMediaSession();
+            syncUI();
+
+            if (autoplay) {
+                setLoading(true);
+                audio.play().catch(err => {
+                    console.error('Error reproduciendo audio:', err);
+                    setLoading(false);
+                    syncUI();
+                });
+            }
+        }
+
+        function toggleTrack(index) {
+            if (index === currentIndex) {
                 togglePlay();
-                return;
+            } else {
+                loadTrack(index, true);
             }
-
-            // DETENER CUALQUIER TRACK ANTERIOR
-            if (currentAudio) {
-                currentAudio.pause();
-                currentAudio.currentTime = 0;
-                currentAudio = null;
-            }
-            clearInterval(progressInterval);
-
-            // Actualizar info del reproductor
-            trackNameEl.textContent = track.name;
-            artistEl.textContent = track.artist + ' · Preview 30s';
-
-            // Mostrar reproductor
-            player.classList.remove('hidden');
-
-            // Marcar track activo en la lista
-            document.querySelectorAll('.track-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            document.querySelector(`[data-track="${trackId}"]`)?.classList.add('active');
-
-            // Iniciar partículas del track
-            startParticles(trackId);
-
-            // Crear nuevo audio
-            currentTrackId = trackId;
-            currentAudio = new Audio(track.url);
-
-            // Configurar eventos del audio
-            currentAudio.addEventListener('timeupdate', updateProgress);
-            currentAudio.addEventListener('ended', onTrackEnded);
-            currentAudio.addEventListener('loadedmetadata', function() {
-                // Asegurar que empiece desde el principio
-                currentAudio.currentTime = 0;
-            });
-
-            // Reproducir
-            currentAudio.play().then(() => {
-                isPlaying = true;
-                playBtn.textContent = '⏸';
-            }).catch(err => {
-                console.error('Error reproduciendo audio:', err);
-                trackNameEl.textContent = 'Error al cargar el audio';
-            });
-        }
-
-        function updateProgress() {
-            if (!currentAudio) return;
-
-            const progressFill = document.getElementById('progressFill');
-            const current = currentAudio.currentTime;
-
-            // Calcular progreso basado en 30 segundos (no en la duración total)
-            const progress = Math.min((current / PREVIEW_DURATION) * 100, 100);
-            progressFill.style.width = progress + '%';
-
-            // Auto-stop a los 30 segundos
-            if (current >= PREVIEW_DURATION) {
-                stopTrack();
-            }
-        }
-
-        function onTrackEnded() {
-            stopTrack();
         }
 
         function togglePlay() {
-            const playBtn = document.getElementById('playPauseBtn');
-
-            if (!currentAudio || !currentTrackId) return;
-
-            if (isPlaying) {
-                currentAudio.pause();
-                isPlaying = false;
-                playBtn.textContent = '▶';
+            if (currentIndex < 0) {
+                loadTrack(0, true);
+                return;
+            }
+            if (audio.paused || audio.ended) {
+                if (audio.ended) audio.currentTime = 0;
+                setLoading(true);
+                audio.play().catch(() => setLoading(false));
             } else {
-                // Si ya pasó de 30s, reiniciar
-                if (currentAudio.currentTime >= PREVIEW_DURATION) {
-                    currentAudio.currentTime = 0;
-                }
-                currentAudio.play();
-                isPlaying = true;
-                playBtn.textContent = '⏸';
+                audio.pause();
             }
         }
 
-        function stopTrack() {
-            const player = document.getElementById('audioPlayer');
-            const playBtn = document.getElementById('playPauseBtn');
-            const progressFill = document.getElementById('progressFill');
-            const trackNameEl = document.getElementById('playerTrackName');
-
-            if (currentAudio) {
-                currentAudio.pause();
-                currentAudio.currentTime = 0;
-                currentAudio.removeEventListener('timeupdate', updateProgress);
-                currentAudio.removeEventListener('ended', onTrackEnded);
-                currentAudio = null;
+        function nextTrack(auto) {
+            if (currentIndex < 0) { loadTrack(0, true); return; }
+            if (currentIndex < tracks.length - 1) {
+                loadTrack(currentIndex + 1, true);
+            } else if (!auto) {
+                loadTrack(0, true); // manual: vuelve al primero
             }
+        }
 
-            clearInterval(progressInterval);
-            progressFill.style.width = '0%';
-            isPlaying = false;
-            currentTrackId = null;
-            playBtn.textContent = '▶';
-            trackNameEl.textContent = 'Selecciona un track';
+        function prevTrack() {
+            if (currentIndex < 0) { loadTrack(0, true); return; }
+            if (audio.currentTime > 3 || currentIndex === 0) {
+                audio.currentTime = 0;
+                if (audio.paused) { audio.play().catch(() => {}); }
+            } else {
+                loadTrack(currentIndex - 1, true);
+            }
+        }
 
-            document.querySelectorAll('.track-item').forEach(item => {
-                item.classList.remove('active');
+        // --- Eventos del audio: única fuente de verdad ---
+        audio.addEventListener('loadedmetadata', render);
+        audio.addEventListener('durationchange', render);
+        audio.addEventListener('timeupdate', render);
+        audio.addEventListener('play', () => {
+            setLoading(false);
+            syncUI();
+            startRaf();
+            if (activeParticles.length === 0 && !particleInterval) {
+                startParticles(currentIndex);
+            } else {
+                resumeParticles(currentIndex);
+            }
+            prefetchNext();
+        });
+        audio.addEventListener('pause', () => {
+            setLoading(false);
+            syncUI();
+            render();
+            pauseParticleSpawning();
+        });
+        audio.addEventListener('waiting', () => setLoading(true));
+        audio.addEventListener('canplay', () => setLoading(false));
+        audio.addEventListener('playing', () => setLoading(false));
+        audio.addEventListener('ended', () => {
+            render();
+            if (currentIndex < tracks.length - 1) {
+                loadTrack(currentIndex + 1, true); // sigue solo, sin cortes
+            } else {
+                syncUI();
+                clearFloatingParticles();
+            }
+        });
+        audio.addEventListener('error', () => {
+            setLoading(false);
+            if (currentIndex >= 0) {
+                trackNameEl.textContent = 'Error al cargar el audio';
+            }
+            syncUI();
+        });
+
+        // --- Controles ---
+        playPauseBtn.addEventListener('click', togglePlay);
+        nextBtn.addEventListener('click', () => nextTrack(false));
+        prevBtn.addEventListener('click', prevTrack);
+
+        rowEls.forEach((row, i) => {
+            row.addEventListener('click', () => toggleTrack(i));
+            row.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    toggleTrack(i);
+                }
             });
+        });
 
-            // Limpiar partículas
-            clearFloatingParticles();
+        // --- Seek: clic o arrastre sobre la barra ---
+        function seekToEvent(e) {
+            const rect = progressBar.getBoundingClientRect();
+            const frac = Math.min(Math.max((e.clientX - rect.left) / rect.width, 0), 1);
+            if (isFinite(audio.duration) && audio.duration > 0) {
+                audio.currentTime = frac * audio.duration;
+                render();
+            }
+        }
 
-            // Ocultar reproductor después de un momento
-            setTimeout(() => {
-                player.classList.add('hidden');
-            }, 300);
+        progressBar.addEventListener('pointerdown', (e) => {
+            if (currentIndex < 0) return;
+            seeking = true;
+            try { progressBar.setPointerCapture(e.pointerId); } catch (_) { /* navegadores sin pointer capture: el clic igual funciona */ }
+            seekToEvent(e);
+        });
+        progressBar.addEventListener('pointermove', (e) => {
+            if (seeking) seekToEvent(e);
+        });
+        progressBar.addEventListener('pointerup', () => { seeking = false; });
+        progressBar.addEventListener('pointercancel', () => { seeking = false; });
+
+        // --- Media Session (controles en pantalla bloqueada) ---
+        if ('mediaSession' in navigator) {
+            navigator.mediaSession.setActionHandler('play', togglePlay);
+            navigator.mediaSession.setActionHandler('pause', () => audio.pause());
+            navigator.mediaSession.setActionHandler('previoustrack', prevTrack);
+            navigator.mediaSession.setActionHandler('nexttrack', () => nextTrack(false));
         }
 
         // ===== NEWSLETTER FORM =====
         function handleSubscribe(event) {
             const messageEl = document.getElementById('formMessage');
-            const emailInput = document.getElementById('mce-EMAIL');
+            const emailInput = document.getElementById('sib-email');
 
             // Mostrar mensaje de éxito inmediatamente
             messageEl.textContent = '¡Gracias por suscribirte! Pronto recibirás noticias exclusivas de DiTowers.';
@@ -1013,12 +1287,11 @@
 
             // Limpiar el campo después de un momento
             setTimeout(() => {
-                emailInput.value = '';
+                if (emailInput) emailInput.value = '';
             }, 100);
 
-            // El formulario se envía normalmente a Mailchimp
-            // No hacemos preventDefault para que Mailchimp reciba los datos
-            console.log('Nueva suscripción enviada a Mailchimp');
+            // El formulario se envía normalmente a Brevo (target=_blank)
+            // No hacemos preventDefault para que Brevo reciba los datos
         }
 
         // ===== SCROLL REVEAL =====
