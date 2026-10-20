@@ -883,7 +883,7 @@
                         <div class="track-name">Sunshine Mimosa</div>
                         <div class="track-artist">DiTowers</div>
                     </div>
-                    <span class="track-duration">0:30</span>
+                    <span class="track-duration">2:42</span>
                     <button class="track-play-btn" data-play-btn="1" aria-label="Play/Pause"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></button>
                 </div>
                 <div class="track-item reveal" data-track="2" role="button" tabindex="0" aria-label="Reproducir Terminé Así">
@@ -1126,9 +1126,9 @@
         // desde los eventos reales del audio (play/pause/ended), así el
         // tiempo, el progreso y los botones NUNCA se desalinean.
         const tracks = [
-            { src: 'track1_como_fue.wav', name: 'como fue bb?', artist: 'DiTowers' },
-            { src: 'track2_sunshine.wav',  name: 'Sunshine Mimosa',  artist: 'DiTowers' },
-            { src: 'track3_termine.wav',   name: 'Terminé Así',      artist: 'DiTowers' }
+            { src: 'track1_como_fue.wav', name: 'como fue bb?',    artist: 'DiTowers', tag: 'Preview 30s', durLabel: '0:30' },
+            { src: 'track2_sunshine.wav',  name: 'Sunshine Mimosa', artist: 'DiTowers', tag: 'Master',      durLabel: '2:42' },
+            { src: 'track3_termine.wav',   name: 'Terminé Así',     artist: 'DiTowers', tag: 'Preview 30s', durLabel: '0:30' }
         ];
 
         const audio = new Audio();
@@ -1234,9 +1234,9 @@
 
             clearFloatingParticles();
             trackNameEl.textContent = t.name;
-            artistEl.textContent = t.artist + ' · Preview 30s';
+            artistEl.textContent = t.artist + ' · ' + t.tag;
             timeCurrentEl.textContent = '0:00';
-            timeDurationEl.textContent = '0:30';
+            timeDurationEl.textContent = t.durLabel;
             progressFill.style.width = '0%';
             progressKnob.style.left = '0%';
 
