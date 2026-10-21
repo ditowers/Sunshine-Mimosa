@@ -908,6 +908,7 @@
                 <div class="player-controls">
                     <button class="player-btn ghost" id="prevBtn" aria-label="Anterior"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h2v14H6zM20 5v14L9.5 12z"/></svg></button>
                     <button class="player-btn" id="playPauseBtn" aria-label="Play/Pause"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></button>
+                    <button class="player-btn ghost" id="stopBtn" aria-label="Detener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10v10H7z"/></svg></button>
                     <button class="player-btn ghost" id="nextBtn" aria-label="Siguiente"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 5h2v14h-2zM4 5v14l10.5-7z"/></svg></button>
                 </div>
                 <div class="progress-bar" id="progressBar" role="slider" aria-label="Progreso" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
@@ -1145,6 +1146,7 @@
         const playPauseBtn  = document.getElementById('playPauseBtn');
         const prevBtn       = document.getElementById('prevBtn');
         const nextBtn       = document.getElementById('nextBtn');
+        const stopBtn       = document.getElementById('stopBtn');
         const progressBar   = document.getElementById('progressBar');
         const progressFill  = document.getElementById('progressFill');
         const progressKnob  = document.getElementById('progressKnob');
@@ -1341,7 +1343,15 @@
         });
 
         // --- Controles ---
+        function stopPlayback() {
+            audio.pause();
+            try { audio.currentTime = 0; } catch (e) {}
+            render();
+            syncUI();
+        }
+
         playPauseBtn.addEventListener('click', togglePlay);
+        stopBtn.addEventListener('click', stopPlayback);
         nextBtn.addEventListener('click', () => nextTrack(false));
         prevBtn.addEventListener('click', prevTrack);
 
