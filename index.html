@@ -504,10 +504,11 @@
             <h2>Únete a la experiencia</h2>
             <p>Registra tu email para recibir noticias exclusivas, contenido detrás de cámaras y próximos lanzamientos de DiTowers.</p>
             <form action="https://3e6f249b.sibforms.com/serve/MUIFABUpmOijhVTFHG7eeP4g-S8l0U29xEEqEKmmkUpsO_SnJSttwUWAwjnYA6eHc9cVeqworfGKkD8XVQqcsZGCjE8nJfnSLF3dw6S_Ioih0CFzV7be9HcheO5ltHoJtjphOfGJ1MJMfvoMVkc-NA1F9FMMfTSrrgXlMo0LAYPcvQf4jRSl5iTMWd3WnaQQ21nV7n10EoDDH-Oezw=="
-                  method="post" id="sib-form" target="_blank" onsubmit="handleSubscribe(event)">
+                  method="post" id="sib-form" target="sib-hidden-frame" onsubmit="handleSubscribe(event)">
                 <input type="email" name="EMAIL" id="sib-email" placeholder="Tu correo electrónico" required>
                 <button type="submit">Suscribirme</button>
             </form>
+            <iframe name="sib-hidden-frame" title="Brevo" style="display:none;width:0;height:0;border:0" aria-hidden="true"></iframe>
             <div class="form-message" id="formMessage"></div>
         </section>
     </main>
@@ -1015,7 +1016,7 @@
             setTimeout(() => {
                 if (emailInput) emailInput.value = '';
             }, 100);
-            // El formulario se envía normalmente a Brevo (target=_blank)
+            // El formulario se envía a Brevo en un iframe oculto (sin salir de la página)
         }
     </script>
 </body>
