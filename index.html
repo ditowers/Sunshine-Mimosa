@@ -3,642 +3,381 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sunshine Mimosa - DiTowers</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <title>Sunshine Mimosa — DiTowers</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
-            --gold: #f4d03f;
-            --gold-light: #f9e79f;
-            --gold-dark: #d4ac0d;
-            --black: #0a0a0a;
-            --dark-gray: #1a1a1a;
-            --mid-gray: #2a2a2a;
-            --white: #ffffff;
-            --orange: #e67e22;
+            --bg: #f7f7f5;
+            --ink: #111111;
+            --ink-soft: #6b6b6b;
+            --ink-faint: #a3a3a3;
+            --line: #e5e5e1;
+            --hover: #efefec;
+            --active: #ececea;
         }
 
-        html {
-            scroll-behavior: smooth;
-        }
+        html { scroll-behavior: smooth; }
 
         body {
-            font-family: 'Montserrat', sans-serif;
-            background-color: var(--black);
-            color: var(--white);
-            overflow-x: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            -webkit-font-smoothing: antialiased;
+            padding-bottom: 148px; /* espacio para el player fijo */
         }
 
-        body.locked {
-            overflow: hidden;
-        }
+        a { color: inherit; }
 
-        /* ===== SPLASH SCREEN ===== */
-        #splash-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(ellipse at center, #1a1500 0%, var(--black) 70%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            transition: opacity 0.8s ease, visibility 0.8s ease;
-        }
-
-        #splash-screen.hidden {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-        }
-
-        .sun-container {
-            position: relative;
-            width: 200px;
-            height: 200px;
-            margin-bottom: 40px;
-        }
-
-        .sun-core {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 120px;
-            height: 120px;
-            background: radial-gradient(circle, #f9e79f 0%, #f4d03f 40%, #d4ac0d 100%);
-            border-radius: 50%;
-            box-shadow: 0 0 60px rgba(244, 208, 63, 0.6), 0 0 120px rgba(244, 208, 63, 0.3);
-            animation: sunPulse 3s ease-in-out infinite;
-        }
-
-        .sun-rays {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 200px;
-            height: 200px;
-            transform: translate(-50%, -50%);
-            animation: rotateRays 20s linear infinite;
-        }
-
-        .sun-ray {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 4px;
-            height: 40px;
-            background: linear-gradient(to bottom, rgba(244, 208, 63, 0.8), transparent);
-            transform-origin: center bottom;
-            border-radius: 2px;
-            margin-left: -2px;
-            margin-top: -40px;
-        }
-
-        .splash-title {
-            font-size: 2.5rem;
-            font-weight: 900;
-            letter-spacing: 8px;
-            color: var(--gold);
-            text-shadow: 0 0 30px rgba(244, 208, 63, 0.5);
-            animation: fadeInUp 1s ease 0.5s both;
-        }
-
-        .splash-subtitle {
-            font-size: 1rem;
-            font-weight: 300;
-            letter-spacing: 4px;
-            color: var(--gold-light);
-            margin-top: 10px;
-            opacity: 0.8;
-            animation: fadeInUp 1s ease 0.8s both;
-        }
-
-        .splash-enter {
-            margin-top: 40px;
-            padding: 12px 40px;
-            background: transparent;
-            border: 2px solid var(--gold);
-            color: var(--gold);
-            font-family: 'Montserrat', sans-serif;
-            font-size: 0.9rem;
-            font-weight: 600;
-            letter-spacing: 3px;
-            cursor: pointer;
-            border-radius: 30px;
-            transition: all 0.3s ease;
-            animation: fadeInUp 1s ease 1.2s both;
-        }
-
-        .splash-enter:hover {
-            background: var(--gold);
-            color: var(--black);
-            box-shadow: 0 0 30px rgba(244, 208, 63, 0.5);
-        }
-
-        @keyframes sunPulse {
-            0%, 100% { transform: translate(-50%, -50%) scale(1); }
-            50% { transform: translate(-50%, -50%) scale(1.1); }
-        }
-
-        @keyframes rotateRays {
-            from { transform: translate(-50%, -50%) rotate(0deg); }
-            to { transform: translate(-50%, -50%) rotate(360deg); }
-        }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* ===== HERO SECTION ===== */
-        #hero {
-            min-height: 100vh;
+        /* ===== HEADER ===== */
+        header {
             display: flex;
             align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 120px 20px 60px;
-            background: radial-gradient(ellipse at 50% 30%, rgba(244, 208, 63, 0.08) 0%, transparent 60%),
-                        linear-gradient(180deg, var(--black) 0%, var(--dark-gray) 100%);
-            position: relative;
-            overflow: hidden;
+            justify-content: space-between;
+            max-width: 920px;
+            margin: 0 auto;
+            padding: 22px 24px 0;
         }
 
-        .hero-content {
-            max-width: 800px;
-            z-index: 2;
-        }
-
-        .hero-title {
-            font-size: clamp(2.5rem, 8vw, 5.5rem);
-            font-weight: 900;
-            letter-spacing: 6px;
-            color: var(--gold);
-            text-shadow: 0 0 40px rgba(244, 208, 63, 0.3);
-            margin-bottom: 25px;
-            line-height: 1.1;
-        }
-
-        .hero-desc {
-            font-size: clamp(1rem, 2.5vw, 1.3rem);
-            font-weight: 300;
-            line-height: 1.8;
-            color: rgba(255, 255, 255, 0.85);
-            max-width: 600px;
-            margin: 0 auto 40px;
-        }
-
-        .hero-cta {
-            display: inline-block;
-            padding: 15px 50px;
-            background: var(--gold);
-            color: var(--black);
+        .wordmark {
+            font-size: 1.05rem;
+            font-weight: 700;
+            letter-spacing: -0.01em;
             text-decoration: none;
-            font-weight: 700;
-            font-size: 0.9rem;
-            letter-spacing: 3px;
-            border-radius: 30px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 20px rgba(244, 208, 63, 0.3);
         }
 
-        .hero-cta:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 30px rgba(244, 208, 63, 0.5);
-        }
-
-        /* Floating particles */
-        .particle {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: var(--gold);
-            border-radius: 50%;
-            opacity: 0.3;
-            animation: floatParticle 8s ease-in-out infinite;
-        }
-
-        @keyframes floatParticle {
-            0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
-            10% { opacity: 0.3; }
-            90% { opacity: 0.3; }
-            100% { transform: translateY(-100vh) translateX(50px); opacity: 0; }
-        }
-
-        /* ===== SECTIONS COMMON ===== */
-        section {
-            padding: 100px 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .section-label {
+        .header-meta {
             font-size: 0.8rem;
-            font-weight: 600;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            color: var(--gold);
-            margin-bottom: 10px;
-            text-align: center;
+            color: var(--ink-faint);
         }
 
-        .section-title {
-            font-size: clamp(1.8rem, 5vw, 3rem);
-            font-weight: 700;
-            text-align: center;
-            margin-bottom: 50px;
-            letter-spacing: 2px;
-        }
-
-        /* ===== SOUNDTRACK SECTION ===== */
-        #soundtrack {
-            background: linear-gradient(180deg, var(--dark-gray) 0%, var(--black) 100%);
-            max-width: 100%;
-            padding: 100px 20px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .soundtrack-container {
-            max-width: 900px;
+        /* ===== LAYOUT ===== */
+        main {
+            max-width: 920px;
             margin: 0 auto;
-            position: relative;
-            z-index: 2;
+            padding: 0 24px;
         }
 
-        .track-list {
+        /* ===== PROJECT HERO ===== */
+        .project {
             display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-bottom: 40px;
+            gap: 32px;
+            align-items: flex-end;
+            padding: 44px 0 34px;
         }
 
-        .track-item {
+        .project-cover {
+            width: 232px;
+            height: 232px;
+            flex-shrink: 0;
+            border-radius: 6px;
+            object-fit: cover;
+            display: block;
+            background: #e9e9e5;
+        }
+
+        .project-info { min-width: 0; padding-bottom: 4px; }
+
+        .project-kicker {
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--ink-faint);
+            margin-bottom: 10px;
+        }
+
+        .project-title {
+            font-size: clamp(1.9rem, 5vw, 3rem);
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            line-height: 1.05;
+            text-transform: uppercase;
+        }
+
+        .project-artist {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .project-meta {
+            font-size: 0.85rem;
+            color: var(--ink-soft);
+            margin-top: 6px;
+        }
+
+        .project-desc {
+            font-size: 0.92rem;
+            line-height: 1.6;
+            color: var(--ink-soft);
+            max-width: 460px;
+            margin-top: 14px;
+        }
+
+        /* ===== TRACKLIST ===== */
+        .tracklist { border-top: 1px solid var(--line); }
+
+        .track-row {
             display: flex;
             align-items: center;
-            gap: 20px;
-            padding: 20px 25px;
-            background: var(--mid-gray);
-            border-radius: 12px;
+            gap: 16px;
+            padding: 13px 10px;
+            border-bottom: 1px solid var(--line);
             cursor: pointer;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(244, 208, 63, 0.1);
+            user-select: none;
+            transition: background 0.15s ease;
         }
 
-        .track-item:hover {
-            background: rgba(244, 208, 63, 0.1);
-            border-color: rgba(244, 208, 63, 0.3);
-            transform: translateX(5px);
-        }
-
-        .track-item.active {
-            background: rgba(244, 208, 63, 0.15);
-            border-color: var(--gold);
-        }
+        .track-row:hover { background: var(--hover); }
+        .track-row.active { background: var(--active); }
 
         .track-num {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--gold);
-            min-width: 35px;
+            width: 22px;
+            text-align: right;
+            font-size: 0.85rem;
+            color: var(--ink-faint);
+            font-variant-numeric: tabular-nums;
             display: flex;
             align-items: center;
+            justify-content: flex-end;
+            flex-shrink: 0;
         }
 
-        /* Mini ecualizador del track activo */
-        .eq {
-            display: none;
-            align-items: flex-end;
-            gap: 3px;
-            height: 16px;
-        }
-
+        /* Ecualizador del track activo */
+        .eq { display: none; align-items: flex-end; gap: 2.5px; height: 13px; }
         .eq i {
-            width: 3.5px;
-            height: 100%;
-            background: var(--gold);
-            border-radius: 2px;
+            width: 3px; height: 100%;
+            background: var(--ink);
+            border-radius: 1px;
             transform-origin: bottom;
             animation: eqBounce 0.9s ease-in-out infinite;
         }
-
         .eq i:nth-child(2) { animation-delay: 0.25s; }
         .eq i:nth-child(3) { animation-delay: 0.5s; }
-
         @keyframes eqBounce {
             0%, 100% { transform: scaleY(0.3); }
             50% { transform: scaleY(1); }
         }
+        .track-row.playing .num-text { display: none; }
+        .track-row.playing .eq { display: flex; }
+        .track-row.active:not(.playing) .eq { display: flex; }
+        .track-row.active:not(.playing) .eq i { animation-play-state: paused; transform: scaleY(0.45); }
+        .track-row.active:not(.playing) .num-text { display: none; }
 
-        .track-item.playing .num-text { display: none; }
-        .track-item.playing .eq { display: flex; }
-        .track-item.active:not(.playing) .eq { display: flex; }
-        .track-item.active:not(.playing) .eq i { animation-play-state: paused; transform: scaleY(0.45); }
-        .track-item.active:not(.playing) .num-text { display: none; }
-
-        .track-info {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .track-name {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        .track-artist {
-            font-size: 0.85rem;
-            color: rgba(255, 255, 255, 0.6);
-        }
-
-        .track-duration {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.5);
-            letter-spacing: 1px;
-            min-width: 38px;
-            text-align: right;
-        }
-
-        .track-item.active .track-duration {
-            color: var(--gold-light);
-        }
-
-        .track-play-btn {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            background: var(--gold);
-            border: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            color: var(--black);
-            font-size: 1rem;
-            flex-shrink: 0;
-        }
-
-        .track-play-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 20px rgba(244, 208, 63, 0.4);
-        }
-
-        .track-play-btn svg {
-            width: 16px;
-            height: 16px;
-            fill: currentColor;
-            display: block;
-        }
-
-        /* ===== AUDIO PLAYER ===== */
-        .audio-player {
-            position: sticky;
-            bottom: 20px;
-            background: rgba(26, 26, 26, 0.95);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(244, 208, 63, 0.2);
-            border-radius: 16px;
-            padding: 20px 30px 26px;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            max-width: 700px;
-            margin: 0 auto;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-            transition: transform 0.3s ease, opacity 0.3s ease, border-color 0.4s ease, box-shadow 0.4s ease;
-            z-index: 100;
-        }
-
-        .audio-player.hidden {
-            transform: translateY(120%);
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .audio-player.playing {
-            border-color: rgba(244, 208, 63, 0.55);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 35px rgba(244, 208, 63, 0.18);
-        }
-
-        .player-cover {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, var(--gold-dark), var(--gold));
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            flex-shrink: 0;
-            overflow: hidden;
-        }
-
-        .player-cover img {
-            width: 100%;
-            height: 100%;
+        .track-thumb {
+            width: 38px; height: 38px;
+            border-radius: 4px;
             object-fit: cover;
-            display: block;
+            flex-shrink: 0;
+            background: #e9e9e5;
         }
 
-        .player-info {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .player-track-name {
-            font-size: 1rem;
-            font-weight: 600;
+        .track-main { flex: 1; min-width: 0; }
+        .track-name {
+            font-size: 0.95rem;
+            font-weight: 550;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
+        .track-sub { font-size: 0.8rem; color: var(--ink-soft); margin-top: 1px; }
 
-        .player-track-artist {
-            font-size: 0.8rem;
-            color: rgba(255, 255, 255, 0.6);
-        }
-
-        .player-time {
-            font-size: 0.75rem;
-            font-weight: 600;
-            letter-spacing: 1.5px;
-            color: rgba(255, 255, 255, 0.55);
-            margin-top: 3px;
-        }
-
-        .player-time .t-cur {
-            color: var(--gold-light);
-        }
-
-        .player-controls {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .player-btn {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: var(--gold);
-            border: none;
-            color: var(--black);
-            font-size: 1.2rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-            position: relative;
+        .track-right {
+            font-size: 0.85rem;
+            color: var(--ink-soft);
+            font-variant-numeric: tabular-nums;
             flex-shrink: 0;
         }
 
-        .player-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 20px rgba(244, 208, 63, 0.4);
+        .track-row.soon { cursor: default; }
+        .track-row.soon:hover { background: transparent; }
+        .track-row.soon .track-name,
+        .track-row.soon .track-num { color: var(--ink-faint); }
+        .soon-label {
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--ink-faint);
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            padding: 4px 10px;
+            flex-shrink: 0;
         }
 
-        .player-btn svg {
-            width: 21px;
-            height: 21px;
-            fill: currentColor;
+        /* ===== NEWSLETTER ===== */
+        .newsletter {
+            padding: 48px 0 8px;
+            max-width: 520px;
+        }
+        .newsletter h2 { font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
+        .newsletter p { font-size: 0.88rem; color: var(--ink-soft); line-height: 1.6; margin-bottom: 16px; }
+        .newsletter form { display: flex; gap: 8px; }
+        .newsletter input {
+            flex: 1; min-width: 0;
+            padding: 11px 14px;
+            font: inherit; font-size: 0.9rem;
+            color: var(--ink);
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            outline: none;
+        }
+        .newsletter input:focus { border-color: var(--ink-faint); }
+        .newsletter button {
+            padding: 11px 18px;
+            font: inherit; font-size: 0.85rem; font-weight: 600;
+            color: #fff; background: var(--ink);
+            border: none; border-radius: 8px;
+            cursor: pointer;
+        }
+        .form-message { margin-top: 14px; padding: 12px 14px; border-radius: 8px; font-size: 0.85rem; display: none; }
+        .form-message.success { display: block; background: #e9f6ee; border: 1px solid #bfe6cd; color: #1d7a41; }
+
+        footer {
+            max-width: 920px;
+            margin: 0 auto;
+            padding: 34px 24px 10px;
+            font-size: 0.75rem;
+            color: var(--ink-faint);
+            letter-spacing: 0.04em;
+        }
+
+        /* ===== PLAYER BAR (fijo, estilo untitled) ===== */
+        .player {
+            position: fixed;
+            left: 0; right: 0; bottom: 0;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-top: 1px solid var(--line);
+            z-index: 100;
+        }
+
+        .player-progress {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            max-width: 920px;
+            margin: 0 auto;
+            padding: 10px 24px 0;
+            font-size: 0.72rem;
+            color: var(--ink-faint);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .progress-bar {
+            position: relative;
+            flex: 1;
+            height: 16px;
+            cursor: pointer;
+            touch-action: none;
+            display: flex;
+            align-items: center;
+        }
+        .progress-bar::before {
+            content: '';
+            position: absolute; left: 0; right: 0;
+            height: 3px;
+            background: var(--line);
+            border-radius: 2px;
+        }
+        .progress-fill {
+            position: absolute; left: 0;
+            height: 3px; width: 0%;
+            background: var(--ink);
+            border-radius: 2px;
+            pointer-events: none;
+        }
+        .progress-knob {
+            position: absolute; left: 0%;
+            width: 11px; height: 11px;
+            background: var(--ink);
+            border-radius: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.15s ease;
+            pointer-events: none;
+        }
+        .player.has-track .progress-knob { opacity: 1; }
+
+        .player-main {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            max-width: 920px;
+            margin: 0 auto;
+            padding: 10px 24px 16px;
+        }
+
+        .player-cover {
+            width: 48px; height: 48px;
+            border-radius: 5px;
+            object-fit: cover;
+            flex-shrink: 0;
+            background: #e9e9e5;
             display: block;
         }
 
-        .player-btn.ghost svg {
-            width: 17px;
-            height: 17px;
+        .player-info { flex: 1; min-width: 0; }
+        .player-track-name {
+            font-size: 0.92rem; font-weight: 600;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
+        .player-track-artist { font-size: 0.8rem; color: var(--ink-soft); margin-top: 1px; }
 
-        .player-btn.ghost {
-            width: 44px;
-            height: 44px;
+        .player-controls { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+
+        .ctl-btn {
+            width: 40px; height: 40px;
+            border-radius: 50%;
             background: transparent;
-            border: 2px solid var(--gold);
-            color: var(--gold);
-            font-size: 0.95rem;
+            border: none;
+            color: var(--ink);
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.15s ease, transform 0.15s ease;
+            position: relative;
+            flex-shrink: 0;
         }
+        .ctl-btn:hover { background: var(--hover); }
+        .ctl-btn svg { width: 19px; height: 19px; fill: currentColor; display: block; }
 
-        .player-btn.ghost:hover {
-            background: rgba(244, 208, 63, 0.12);
+        .ctl-btn.main {
+            width: 46px; height: 46px;
+            background: var(--ink);
+            color: #fff;
         }
+        .ctl-btn.main:hover { background: #000; transform: scale(1.04); }
+        .ctl-btn.main svg { width: 20px; height: 20px; }
 
-        .player-btn.loading {
-            color: transparent;
-            pointer-events: none;
-        }
+        .ctl-btn.stop { border: 1.5px solid var(--ink); }
+        .ctl-btn.stop svg { width: 15px; height: 15px; }
 
-        .player-btn.loading::after {
+        .ctl-btn.loading { color: transparent; pointer-events: none; }
+        .ctl-btn.loading::after {
             content: '';
-            position: absolute;
-            inset: 13px;
-            border: 3px solid rgba(0, 0, 0, 0.25);
-            border-top-color: var(--black);
+            position: absolute; inset: 11px;
+            border: 2.5px solid rgba(255,255,255,0.3);
+            border-top-color: #fff;
             border-radius: 50%;
             animation: spinRing 0.7s linear infinite;
         }
+        @keyframes spinRing { to { transform: rotate(360deg); } }
 
-        @keyframes spinRing {
-            to { transform: rotate(360deg); }
-        }
-
-        /* Barra de progreso: visible, clickeable y arrastrable */
-        .progress-bar {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 14px;
-            border-radius: 0 0 16px 16px;
-            cursor: pointer;
-            touch-action: none;
-        }
-
-        .progress-bar::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            height: 5px;
-            background: rgba(244, 208, 63, 0.2);
-            border-radius: 0 0 16px 16px;
-        }
-
-        .progress-fill {
-            position: absolute;
-            left: 0;
-            bottom: 0;
-            height: 5px;
-            width: 0%;
-            background: var(--gold);
-            border-radius: 0 0 0 16px;
-            pointer-events: none;
-        }
-
-        .progress-knob {
-            position: absolute;
-            bottom: 2.5px;
-            left: 0%;
-            width: 13px;
-            height: 13px;
-            background: var(--gold);
-            border-radius: 50%;
-            transform: translate(-50%, 50%);
-            box-shadow: 0 0 10px rgba(244, 208, 63, 0.7);
-            opacity: 0;
-            transition: opacity 0.2s ease;
-            pointer-events: none;
-        }
-
-        .audio-player.has-track .progress-knob {
-            opacity: 1;
-        }
-
-        /* ===== FLOATING EMOJI PARTICLES ===== */
-        .floating-emoji {
-            position: fixed;
-            font-size: 2rem;
-            pointer-events: none;
-            z-index: 50;
-            animation: floatEmoji 4s ease-in-out infinite;
-            opacity: 0.7;
-            text-shadow: 0 0 10px rgba(255,255,255,0.3);
-        }
-
-        @keyframes floatEmoji {
-            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-            10% { opacity: 0.7; }
-            90% { opacity: 0.7; }
-            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
-        }
-
-        /* ===== LLUVIA DE EMOJIS (tracks con lluvia) ===== */
+        /* ===== LLUVIA DE EMOJIS (por track, se mantiene) ===== */
         .emoji-rain {
             position: fixed;
             top: -10vh;
             pointer-events: none;
             z-index: 60;
             opacity: 0.95;
-            text-shadow: 0 0 12px rgba(244, 208, 63, 0.45);
             animation-name: rainFall;
             animation-timing-function: linear;
             animation-fill-mode: forwards;
             will-change: transform;
         }
-
         @keyframes rainFall {
             0% { transform: translate3d(0, 0, 0) rotate(-8deg); }
             25% { transform: translate3d(var(--sway, 20px), 30vh, 0) rotate(8deg); }
@@ -647,401 +386,138 @@
             100% { transform: translate3d(0, 118vh, 0) rotate(-4deg); }
         }
 
-        /* ===== GALLERY / EP COVER ===== */
-        #gallery {
-            text-align: center;
-            background: linear-gradient(180deg, var(--black) 0%, var(--dark-gray) 100%);
-            max-width: 100%;
-            padding: 100px 20px;
-        }
-
-        .gallery-container {
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .single-cover-container {
-            position: relative;
-            display: inline-block;
-        }
-
-        .single-cover-container img {
-            max-width: 100%;
-            width: 500px;
-            border-radius: 20px;
-            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), 0 0 60px rgba(244, 208, 63, 0.1);
-            transition: transform 0.4s ease, box-shadow 0.4s ease;
-        }
-
-        .single-cover-container img:hover {
-            transform: scale(1.02) rotate(1deg);
-            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.7), 0 0 80px rgba(244, 208, 63, 0.2);
-        }
-
-        /* ===== CONTACT / NEWSLETTER ===== */
-        #contact {
-            text-align: center;
-            background: linear-gradient(180deg, var(--dark-gray) 0%, var(--black) 100%);
-            max-width: 100%;
-            padding: 100px 20px;
-        }
-
-        .contact-container {
-            max-width: 500px;
-            margin: 0 auto;
-        }
-
-        .contact-desc {
-            font-size: 1.1rem;
-            color: rgba(255, 255, 255, 0.7);
-            margin-bottom: 40px;
-            line-height: 1.7;
-        }
-
-        .contact-form {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .contact-form input {
-            padding: 18px 25px;
-            background: var(--mid-gray);
-            border: 1px solid rgba(244, 208, 63, 0.2);
-            border-radius: 12px;
-            color: var(--white);
-            font-family: 'Montserrat', sans-serif;
-            font-size: 1rem;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        .contact-form input::placeholder {
-            color: rgba(255, 255, 255, 0.4);
-        }
-
-        .contact-form input:focus {
-            border-color: var(--gold);
-            box-shadow: 0 0 20px rgba(244, 208, 63, 0.15);
-        }
-
-        .submit-btn {
-            padding: 18px 40px;
-            background: var(--gold);
-            color: var(--black);
-            border: none;
-            border-radius: 12px;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 1rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(244, 208, 63, 0.4);
-        }
-
-        .submit-btn:active {
-            transform: translateY(0);
-        }
-
-        .form-message {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 10px;
-            font-size: 0.9rem;
-            display: none;
-        }
-
-        .form-message.success {
-            display: block;
-            background: rgba(39, 174, 96, 0.2);
-            border: 1px solid rgba(39, 174, 96, 0.4);
-            color: #2ecc71;
-        }
-
-        /* ===== FOOTER ===== */
-        footer {
-            text-align: center;
-            padding: 40px 20px;
-            background: var(--black);
-            border-top: 1px solid rgba(244, 208, 63, 0.1);
-        }
-
-        footer p {
-            font-size: 0.8rem;
-            color: rgba(255, 255, 255, 0.4);
-            letter-spacing: 2px;
-        }
-
-        /* ===== SCROLL ANIMATIONS ===== */
-        .reveal {
-            opacity: 0;
-            transform: translateY(40px);
-            transition: all 0.8s ease;
-        }
-
-        .reveal.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* ===== MOBILE RESPONSIVE ===== */
-        @media (max-width: 768px) {
-            .audio-player {
-                padding: 15px 20px 22px;
-                gap: 12px;
-            }
-
-            .player-cover {
-                width: 45px;
-                height: 45px;
-                font-size: 1.2rem;
-            }
-
-            .player-btn {
-                width: 42px;
-                height: 42px;
-                font-size: 1rem;
-            }
-
-            .player-btn.ghost {
-                width: 38px;
-                height: 38px;
-            }
-
-            .player-time {
-                font-size: 0.68rem;
-            }
-
-            .track-item {
-                padding: 15px 18px;
-            }
-
-            .track-duration {
-                display: none;
-            }
-
-            .splash-title {
-                font-size: 1.8rem;
-                letter-spacing: 4px;
-            }
+        /* ===== MOBILE ===== */
+        @media (max-width: 640px) {
+            .project { flex-direction: column; align-items: flex-start; gap: 20px; padding-top: 32px; }
+            .project-cover { width: 168px; height: 168px; }
+            .player-track-artist { display: none; }
+            .ctl-btn { width: 36px; height: 36px; }
+            .ctl-btn.main { width: 42px; height: 42px; }
+            body { padding-bottom: 138px; }
         }
     </style>
 </head>
-<body class="locked">
+<body>
 
-    <!-- ===== SPLASH SCREEN ===== -->
-    <div id="splash-screen">
-        <div class="sun-container">
-            <div class="sun-rays" id="sunRays"></div>
-            <div class="sun-core"></div>
-        </div>
-        <div class="splash-title">SUNSHINE MIMOSA</div>
-        <div class="splash-subtitle">DiTowers</div>
-        <button class="splash-enter" onclick="enterSite()">ENTRAR</button>
-    </div>
+    <!-- ===== HEADER ===== -->
+    <header>
+        <a class="wordmark" href="./">DiTowers</a>
+        <span class="header-meta">Sunshine Mimosa</span>
+    </header>
 
-    <!-- ===== HERO SECTION ===== -->
-    <section id="hero">
-        <div class="hero-content reveal">
-            <h1 class="hero-title">SUNSHINE MIMOSA</h1>
-            <p class="hero-desc">Sumérgete en una experiencia musical única, nacida de las vivencias y el alma de DiTowers. Donde cada nota cuenta una historia de sol y vida.</p>
-            <a href="#soundtrack" class="hero-cta">ESCUCHAR AHORA</a>
-        </div>
-        <!-- Floating particles -->
-        <div class="particle" style="left: 10%; animation-delay: 0s;"></div>
-        <div class="particle" style="left: 25%; animation-delay: 2s;"></div>
-        <div class="particle" style="left: 40%; animation-delay: 4s;"></div>
-        <div class="particle" style="left: 60%; animation-delay: 1s;"></div>
-        <div class="particle" style="left: 75%; animation-delay: 3s;"></div>
-        <div class="particle" style="left: 90%; animation-delay: 5s;"></div>
-    </section>
-
-    <!-- ===== SOUNDTRACK SECTION ===== -->
-    <section id="soundtrack">
-        <div class="soundtrack-container">
-            <p class="section-label reveal">DiTowers</p>
-            <h2 class="section-title reveal">Soundtrack</h2>
-
-            <div class="track-list">
-                <div class="track-item reveal" data-track="0" role="button" tabindex="0" aria-label="Reproducir como fue bb?">
-                    <span class="track-num"><span class="num-text">01</span><span class="eq"><i></i><i></i><i></i></span></span>
-                    <div class="track-info">
-                        <div class="track-name">como fue bb?</div>
-                        <div class="track-artist">DiTowers</div>
-                    </div>
-                    <span class="track-duration">0:30</span>
-                    <button class="track-play-btn" data-play-btn="0" aria-label="Play/Pause"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></button>
-                </div>
-                <div class="track-item reveal" data-track="1" role="button" tabindex="0" aria-label="Reproducir Sunshine Mimosa">
-                    <span class="track-num"><span class="num-text">02</span><span class="eq"><i></i><i></i><i></i></span></span>
-                    <div class="track-info">
-                        <div class="track-name">Sunshine Mimosa</div>
-                        <div class="track-artist">DiTowers</div>
-                    </div>
-                    <span class="track-duration">0:30</span>
-                    <button class="track-play-btn" data-play-btn="1" aria-label="Play/Pause"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></button>
-                </div>
-                <div class="track-item reveal" data-track="2" role="button" tabindex="0" aria-label="Reproducir Terminé Así">
-                    <span class="track-num"><span class="num-text">03</span><span class="eq"><i></i><i></i><i></i></span></span>
-                    <div class="track-info">
-                        <div class="track-name">Terminé Así</div>
-                        <div class="track-artist">DiTowers</div>
-                    </div>
-                    <span class="track-duration">0:30</span>
-                    <button class="track-play-btn" data-play-btn="2" aria-label="Play/Pause"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></button>
-                </div>
+    <main>
+        <!-- ===== PROJECT ===== -->
+        <section class="project">
+            <img class="project-cover" src="cover.jpg" alt="Sunshine Mimosa — portada del proyecto">
+            <div class="project-info">
+                <div class="project-kicker">Proyecto</div>
+                <h1 class="project-title">Sunshine Mimosa</h1>
+                <div class="project-artist">DiTowers</div>
+                <div class="project-meta">4 tracks</div>
+                <p class="project-desc">Una experiencia musical nacida de las vivencias y el alma de DiTowers. Donde cada nota cuenta una historia de sol y vida.</p>
             </div>
+        </section>
 
-            <!-- Audio Player -->
-            <div class="audio-player hidden" id="audioPlayer">
-                <div class="player-cover"><img src="cover.jpg" alt="Sunshine Mimosa"></div>
-                <div class="player-info">
-                    <div class="player-track-name" id="playerTrackName">Selecciona un track</div>
-                    <div class="player-track-artist" id="playerTrackArtist">DiTowers · Preview 30s</div>
-                    <div class="player-time"><span class="t-cur" id="timeCurrent">0:00</span> / <span id="timeDuration">0:30</span></div>
-                </div>
-                <div class="player-controls">
-                    <button class="player-btn ghost" id="prevBtn" aria-label="Anterior"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h2v14H6zM20 5v14L9.5 12z"/></svg></button>
-                    <button class="player-btn" id="playPauseBtn" aria-label="Play/Pause"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></button>
-                    <button class="player-btn ghost" id="stopBtn" aria-label="Detener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10v10H7z"/></svg></button>
-                    <button class="player-btn ghost" id="nextBtn" aria-label="Siguiente"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 5h2v14h-2zM4 5v14l10.5-7z"/></svg></button>
-                </div>
-                <div class="progress-bar" id="progressBar" role="slider" aria-label="Progreso" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-                    <div class="progress-fill" id="progressFill"></div>
-                    <div class="progress-knob" id="progressKnob"></div>
-                </div>
-            </div>
-        </div>
-    </section>
+        <!-- ===== TRACKLIST ===== -->
+        <section class="tracklist" id="tracklist" aria-label="Lista de canciones"></section>
 
-    <!-- ===== GALLERY / EP COVER ===== -->
-    <section id="gallery">
-        <div class="gallery-container">
-            <p class="section-label reveal">DiTowers</p>
-            <h2 class="section-title reveal">Sunshine Mimosa</h2>
-            <div class="single-cover-container reveal">
-                <img src="cover.jpg" alt="Sunshine Mimosa EP Cover">
-            </div>
-        </div>
-    </section>
-
-    <!-- ===== CONTACT / NEWSLETTER ===== -->
-    <section id="contact">
-        <div class="contact-container">
-            <p class="section-label reveal">Comunidad</p>
-            <h2 class="section-title reveal">Únete a la experiencia</h2>
-            <p class="contact-desc reveal">Registra tu email para recibir noticias exclusivas, contenido detrás de cámaras y próximos lanzamientos de DiTowers.</p>
-            <!-- BREVO FORM -->
-            <form class="contact-form reveal"
-                  action="https://3e6f249b.sibforms.com/serve/MUIFABUpmOijhVTFHG7eeP4g-S8l0U29xEEqEKmmkUpsO_SnJSttwUWAwjnYA6eHc9cVeqworfGKkD8XVQqcsZGCjE8nJfnSLF3dw6S_Ioih0CFzV7be9HcheO5ltHoJtjphOfGJ1MJMfvoMVkc-NA1F9FMMfTSrrgXlMo0LAYPcvQf4jRSl5iTMWd3WnaQQ21nV7n10EoDDH-Oezw=="
-                  method="post"
-                  id="sib-form"
-                  target="_blank"
-                  onsubmit="handleSubscribe(event)">
-                <input type="email"
-                       name="EMAIL"
-                       id="sib-email"
-                       placeholder="Tu correo electrónico"
-                       required>
-                <button type="submit" class="submit-btn">SUSCRIBIRME</button>
+        <!-- ===== NEWSLETTER (Brevo, se mantiene) ===== -->
+        <section class="newsletter">
+            <h2>Únete a la experiencia</h2>
+            <p>Registra tu email para recibir noticias exclusivas, contenido detrás de cámaras y próximos lanzamientos de DiTowers.</p>
+            <form action="https://3e6f249b.sibforms.com/serve/MUIFABUpmOijhVTFHG7eeP4g-S8l0U29xEEqEKmmkUpsO_SnJSttwUWAwjnYA6eHc9cVeqworfGKkD8XVQqcsZGCjE8nJfnSLF3dw6S_Ioih0CFzV7be9HcheO5ltHoJtjphOfGJ1MJMfvoMVkc-NA1F9FMMfTSrrgXlMo0LAYPcvQf4jRSl5iTMWd3WnaQQ21nV7n10EoDDH-Oezw=="
+                  method="post" id="sib-form" target="_blank" onsubmit="handleSubscribe(event)">
+                <input type="email" name="EMAIL" id="sib-email" placeholder="Tu correo electrónico" required>
+                <button type="submit">Suscribirme</button>
             </form>
             <div class="form-message" id="formMessage"></div>
+        </section>
+    </main>
+
+    <footer>© 2026 DiTowers · Sunshine Mimosa · Todos los derechos reservados</footer>
+
+    <!-- ===== PLAYER BAR ===== -->
+    <div class="player" id="audioPlayer">
+        <div class="player-progress">
+            <span id="timeCurrent">0:00</span>
+            <div class="progress-bar" id="progressBar" role="slider" aria-label="Progreso" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                <div class="progress-fill" id="progressFill"></div>
+                <div class="progress-knob" id="progressKnob"></div>
+            </div>
+            <span id="timeDuration">0:00</span>
         </div>
-    </section>
+        <div class="player-main">
+            <img class="player-cover" id="playerCover" src="cover.jpg" alt="Portada">
+            <div class="player-info">
+                <div class="player-track-name" id="playerTrackName">Selecciona un track</div>
+                <div class="player-track-artist" id="playerTrackArtist">DiTowers</div>
+            </div>
+            <div class="player-controls">
+                <button class="ctl-btn" id="prevBtn" aria-label="Anterior"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h2v14H6zM20 5v14L9.5 12z"/></svg></button>
+                <button class="ctl-btn main" id="playPauseBtn" aria-label="Play/Pause"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></button>
+                <button class="ctl-btn stop" id="stopBtn" aria-label="Detener (Stop)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10v10H7z"/></svg></button>
+                <button class="ctl-btn" id="nextBtn" aria-label="Siguiente"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 5h2v14h-2zM4 5v14l10.5-7z"/></svg></button>
+            </div>
+        </div>
+    </div>
 
-    <!-- ===== FOOTER ===== -->
-    <footer>
-        <p>© 2026 DITOWERS · SUNSHINE MIMOSA · TODOS LOS DERECHOS RESERVADOS</p>
-    </footer>
-
-    <!-- ===== JAVASCRIPT ===== -->
     <script>
-        // ===== GENERATE SUN RAYS DYNAMICALLY =====
-        function generateSunRays() {
-            const raysContainer = document.getElementById('sunRays');
-            const rayCount = 12;
-            for (let i = 0; i < rayCount; i++) {
-                const ray = document.createElement('div');
-                ray.className = 'sun-ray';
-                const angle = (360 / rayCount) * i;
-                ray.style.transform = `rotate(${angle}deg)`;
-                raysContainer.appendChild(ray);
+        // ===== DATOS DE TRACKS (estructurado) =====
+        // Para activar un track "soon": pon su src y quita soon:true. Nada más.
+        const tracks = [
+            { src: 'track1_como_fue.wav',       name: 'como fue bb?',    artist: 'DiTowers', tag: 'Preview 30s', durLabel: '0:30', cover: 'cover.jpg' },
+            { src: 'track2_sunshine.wav',       name: 'Sunshine Mimosa', artist: 'DiTowers', tag: 'Preview 30s', durLabel: '0:30', cover: 'cover.jpg' },
+            { src: 'track3_termine.wav',        name: 'Terminé Así',     artist: 'DiTowers', tag: 'Preview 30s', durLabel: '0:30', cover: 'cover.jpg' },
+            { src: null,                        name: 'No Me Lo Esperaba', artist: 'DiTowers', tag: '', durLabel: '', cover: 'cover-no-me-lo-esperaba.jpg', soon: true }
+        ];
+
+        // ===== RENDER DE LA LISTA =====
+        const tracklistEl = document.getElementById('tracklist');
+        tracks.forEach((t, i) => {
+            const row = document.createElement('div');
+            row.className = 'track-row' + (t.soon ? ' soon' : '');
+            row.dataset.track = i;
+            if (!t.soon) {
+                row.setAttribute('role', 'button');
+                row.setAttribute('tabindex', '0');
+                row.setAttribute('aria-label', 'Reproducir ' + t.name);
+            } else {
+                row.setAttribute('aria-label', t.name + ' — próximamente');
             }
-        }
-        generateSunRays();
+            const num = String(i + 1).padStart(2, '0');
+            row.innerHTML =
+                '<span class="track-num"><span class="num-text">' + num + '</span><span class="eq"><i></i><i></i><i></i></span></span>' +
+                (t.soon ? '<img class="track-thumb" src="' + t.cover + '" alt="">' : '') +
+                '<div class="track-main"><div class="track-name">' + t.name + '</div><div class="track-sub">' + t.artist + '</div></div>' +
+                (t.soon ? '<span class="soon-label">Próximamente</span>'
+                        : '<span class="track-right">' + t.durLabel + '</span>');
+            tracklistEl.appendChild(row);
+        });
+        const rowEls = Array.from(document.querySelectorAll('.track-row'));
 
-        // ===== SPLASH SCREEN =====
-        function enterSite() {
-            const splash = document.getElementById('splash-screen');
-            splash.classList.add('hidden');
-            document.body.classList.remove('locked');
-            document.body.style.overflow = 'auto';
-        }
-
-        // ===== FLOATING PARTICLES SYSTEM =====
+        // ===== LLUVIA DE EMOJIS (por track) =====
         let particleInterval = null;
         let rainInterval = null;
         let rainSession = 0;
         let activeParticles = [];
 
-        const trackParticles = [
-            ['🥂', '🍾', '🍷', '🥃'],
-            ['🐝', '🐝', '🐝', '🍯'],
-            ['🌻', '🌻', '🌻', '🌼']
-        ];
-
-        function clearFloatingParticles() {
-            rainSession++; // invalida ráfagas de lluvia pendientes del track anterior
-            activeParticles.forEach(p => {
-                if (p.parentNode) p.parentNode.removeChild(p);
-            });
-            activeParticles = [];
-            pauseParticleSpawning();
-        }
-
-        function pauseParticleSpawning() {
-            if (particleInterval) {
-                clearInterval(particleInterval);
-                particleInterval = null;
-            }
-            if (rainInterval) {
-                clearInterval(rainInterval);
-                rainInterval = null;
-            }
-        }
-
-        function spawnParticle(emoji) {
-            const el = document.createElement('div');
-            el.className = 'floating-emoji';
-            el.textContent = emoji;
-            el.style.left = Math.random() * 100 + 'vw';
-            el.style.fontSize = (Math.random() * 1.5 + 1.5) + 'rem';
-            el.style.animationDuration = (Math.random() * 3 + 3) + 's';
-            el.style.animationDelay = Math.random() * 2 + 's';
-            el.style.zIndex = '50';
-            document.body.appendChild(el);
-            activeParticles.push(el);
-
-            // Auto-remove after animation
-            setTimeout(() => {
-                if (el.parentNode) el.parentNode.removeChild(el);
-                activeParticles = activeParticles.filter(p => p !== el);
-            }, 6000);
-        }
-
-        // ===== LLUVIA DE EMOJIS =====
-        // Lluvia por track: 0 "como fue bb?" -> tragos tropicales,
-        // 1 "Sunshine Mimosa" -> abejas de miel, 2 "Terminé Así" -> girasoles
         const rainSets = {
             0: ['🍹', '🍹', '🍹', '🍹', '🍹'],
             1: ['🐝', '🐝', '🐝', '🐝', '🍯'],
             2: ['🌻', '🌻', '🌻', '🌻', '🌼']
         };
+
+        function clearFloatingParticles() {
+            rainSession++;
+            activeParticles.forEach(p => { if (p.parentNode) p.parentNode.removeChild(p); });
+            activeParticles = [];
+            pauseParticleSpawning();
+        }
+
+        function pauseParticleSpawning() {
+            if (particleInterval) { clearInterval(particleInterval); particleInterval = null; }
+            if (rainInterval) { clearInterval(rainInterval); rainInterval = null; }
+        }
 
         function spawnRainDrop(trackIndex) {
             const set = rainSets[trackIndex];
@@ -1056,7 +532,6 @@
             el.style.setProperty('--sway', (Math.random() * 50 + 15) + 'px');
             document.body.appendChild(el);
             activeParticles.push(el);
-
             setTimeout(() => {
                 if (el.parentNode) el.parentNode.removeChild(el);
                 activeParticles = activeParticles.filter(p => p !== el);
@@ -1066,7 +541,6 @@
         function startRain(trackIndex) {
             pauseParticleSpawning();
             const session = rainSession;
-            // Ráfaga inicial (solo si sigue sonando ESTE track)
             for (let i = 0; i < 16; i++) {
                 setTimeout(() => {
                     if (session === rainSession && !audio.paused && currentIndex === trackIndex) {
@@ -1084,54 +558,16 @@
 
         function startParticles(trackIndex) {
             clearFloatingParticles();
-            if (rainSets[trackIndex]) {
-                startRain(trackIndex);
-                return;
-            }
-            const emojis = trackParticles[trackIndex];
-            if (!emojis) return;
-
-            // Spawn initial batch (solo si sigue sonando ESTE track)
-            const session = rainSession;
-            for (let i = 0; i < 8; i++) {
-                setTimeout(() => {
-                    if (session === rainSession && !audio.paused && currentIndex === trackIndex) {
-                        const emoji = emojis[Math.floor(Math.random() * emojis.length)];
-                        spawnParticle(emoji);
-                    }
-                }, i * 300);
-            }
-
-            // Keep spawning
-            particleInterval = setInterval(() => {
-                const emoji = emojis[Math.floor(Math.random() * emojis.length)];
-                spawnParticle(emoji);
-            }, 800);
+            if (rainSets[trackIndex]) startRain(trackIndex);
         }
 
         function resumeParticles(trackIndex) {
-            if (rainSets[trackIndex]) {
-                resumeRain(trackIndex);
-                return;
-            }
-            const emojis = trackParticles[trackIndex];
-            if (!emojis || particleInterval) return;
-            particleInterval = setInterval(() => {
-                const emoji = emojis[Math.floor(Math.random() * emojis.length)];
-                spawnParticle(emoji);
-            }, 800);
+            if (rainSets[trackIndex]) resumeRain(trackIndex);
         }
 
-        // ===== AUDIO PLAYER (motor nuevo) =====
+        // ===== AUDIO PLAYER =====
         // Un solo elemento <audio> persistente: la interfaz se sincroniza
-        // desde los eventos reales del audio (play/pause/ended), así el
-        // tiempo, el progreso y los botones NUNCA se desalinean.
-        const tracks = [
-            { src: 'track1_como_fue.wav', name: 'como fue bb?',    artist: 'DiTowers', tag: 'Preview 30s', durLabel: '0:30' },
-            { src: 'track2_sunshine.wav',  name: 'Sunshine Mimosa', artist: 'DiTowers', tag: 'Preview 30s', durLabel: '0:30' },
-            { src: 'track3_termine.wav',   name: 'Terminé Así',     artist: 'DiTowers', tag: 'Preview 30s', durLabel: '0:30' }
-        ];
-
+        // desde los eventos reales del audio (play/pause/ended).
         const audio = new Audio();
         audio.preload = 'auto';
 
@@ -1141,6 +577,7 @@
         const prefetched = new Set();
 
         const playerEl      = document.getElementById('audioPlayer');
+        const playerCoverEl = document.getElementById('playerCover');
         const trackNameEl   = document.getElementById('playerTrackName');
         const artistEl      = document.getElementById('playerTrackArtist');
         const playPauseBtn  = document.getElementById('playPauseBtn');
@@ -1152,8 +589,6 @@
         const progressKnob  = document.getElementById('progressKnob');
         const timeCurrentEl = document.getElementById('timeCurrent');
         const timeDurationEl= document.getElementById('timeDuration');
-        const rowEls        = Array.from(document.querySelectorAll('.track-item'));
-        const rowBtns       = Array.from(document.querySelectorAll('[data-play-btn]'));
 
         function fmt(t) {
             if (!isFinite(t) || t < 0) t = 0;
@@ -1186,20 +621,15 @@
             if (rafId === null) rafId = requestAnimationFrame(rafLoop);
         }
 
-        // Iconos SVG minimalistas (se ven iguales en toda pantalla)
         const ICON_PLAY  = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>';
         const ICON_PAUSE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>';
 
         function syncUI() {
             const playing = !audio.paused && !audio.ended;
             playPauseBtn.innerHTML = playing ? ICON_PAUSE : ICON_PLAY;
-            playerEl.classList.toggle('playing', playing);
             rowEls.forEach((row, i) => {
                 row.classList.toggle('active', i === currentIndex);
                 row.classList.toggle('playing', i === currentIndex && playing);
-            });
-            rowBtns.forEach((btn, i) => {
-                btn.innerHTML = (i === currentIndex && playing) ? ICON_PAUSE : ICON_PLAY;
             });
         }
 
@@ -1214,12 +644,13 @@
                 title: t.name,
                 artist: t.artist,
                 album: 'Sunshine Mimosa',
-                artwork: [{ src: 'cover.jpg', sizes: '512x512', type: 'image/jpeg' }]
+                artwork: [{ src: t.cover, sizes: '512x512', type: 'image/jpeg' }]
             });
         }
 
         function prefetchNext() {
-            const n = currentIndex + 1;
+            let n = currentIndex + 1;
+            while (n < tracks.length && !tracks[n].src) n++;
             if (n >= tracks.length || prefetched.has(n)) return;
             prefetched.add(n);
             const link = document.createElement('link');
@@ -1228,21 +659,26 @@
             document.head.appendChild(link);
         }
 
+        function nextPlayable(from, dir) {
+            let i = from + dir;
+            while (i >= 0 && i < tracks.length && !tracks[i].src) i += dir;
+            return (i >= 0 && i < tracks.length) ? i : -1;
+        }
+
         function loadTrack(index, autoplay) {
             if (index < 0 || index >= tracks.length) return;
-            const wasPlaying = !audio.paused;
-            currentIndex = index;
             const t = tracks[index];
+            if (!t.src) return; // track "soon": no se reproduce todavía
+            currentIndex = index;
 
             clearFloatingParticles();
             trackNameEl.textContent = t.name;
-            artistEl.textContent = t.artist + ' · ' + t.tag;
+            artistEl.textContent = t.artist + (t.tag ? ' · ' + t.tag : '');
+            playerCoverEl.src = t.cover;
             timeCurrentEl.textContent = '0:00';
             timeDurationEl.textContent = t.durLabel;
             progressFill.style.width = '0%';
             progressKnob.style.left = '0%';
-
-            playerEl.classList.remove('hidden');
             playerEl.classList.add('has-track');
 
             audio.src = t.src;
@@ -1261,6 +697,7 @@
         }
 
         function toggleTrack(index) {
+            if (!tracks[index].src) return; // soon: sin acción
             if (index === currentIndex) {
                 togglePlay();
             } else {
@@ -1284,8 +721,9 @@
 
         function nextTrack(auto) {
             if (currentIndex < 0) { loadTrack(0, true); return; }
-            if (currentIndex < tracks.length - 1) {
-                loadTrack(currentIndex + 1, true);
+            const n = nextPlayable(currentIndex, 1);
+            if (n >= 0) {
+                loadTrack(n, true);
             } else if (!auto) {
                 loadTrack(0, true); // manual: vuelve al primero
             }
@@ -1297,7 +735,8 @@
                 audio.currentTime = 0;
                 if (audio.paused) { audio.play().catch(() => {}); }
             } else {
-                loadTrack(currentIndex - 1, true);
+                const p = nextPlayable(currentIndex, -1);
+                if (p >= 0) loadTrack(p, true);
             }
         }
 
@@ -1327,8 +766,9 @@
         audio.addEventListener('playing', () => setLoading(false));
         audio.addEventListener('ended', () => {
             render();
-            if (currentIndex < tracks.length - 1) {
-                loadTrack(currentIndex + 1, true); // sigue solo, sin cortes
+            const n = (currentIndex >= 0) ? nextPlayable(currentIndex, 1) : -1;
+            if (n >= 0) {
+                loadTrack(n, true); // auto-avance sin cortes
             } else {
                 syncUI();
                 clearFloatingParticles();
@@ -1342,7 +782,7 @@
             syncUI();
         });
 
-        // --- Controles ---
+        // --- Controles (play/pause, STOP, prev, next) ---
         function stopPlayback() {
             audio.pause();
             try { audio.currentTime = 0; } catch (e) {}
@@ -1378,7 +818,7 @@
         progressBar.addEventListener('pointerdown', (e) => {
             if (currentIndex < 0) return;
             seeking = true;
-            try { progressBar.setPointerCapture(e.pointerId); } catch (_) { /* navegadores sin pointer capture: el clic igual funciona */ }
+            try { progressBar.setPointerCapture(e.pointerId); } catch (_) {}
             seekToEvent(e);
         });
         progressBar.addEventListener('pointermove', (e) => {
@@ -1387,7 +827,7 @@
         progressBar.addEventListener('pointerup', () => { seeking = false; });
         progressBar.addEventListener('pointercancel', () => { seeking = false; });
 
-        // --- Media Session (controles en pantalla bloqueada) ---
+        // --- Media Session ---
         if ('mediaSession' in navigator) {
             navigator.mediaSession.setActionHandler('play', togglePlay);
             navigator.mediaSession.setActionHandler('pause', () => audio.pause());
@@ -1399,36 +839,13 @@
         function handleSubscribe(event) {
             const messageEl = document.getElementById('formMessage');
             const emailInput = document.getElementById('sib-email');
-
-            // Mostrar mensaje de éxito inmediatamente
             messageEl.textContent = '¡Gracias por suscribirte! Pronto recibirás noticias exclusivas de DiTowers.';
             messageEl.className = 'form-message success';
-
-            // Limpiar el campo después de un momento
             setTimeout(() => {
                 if (emailInput) emailInput.value = '';
             }, 100);
-
             // El formulario se envía normalmente a Brevo (target=_blank)
-            // No hacemos preventDefault para que Brevo reciba los datos
         }
-
-        // ===== SCROLL REVEAL =====
-        function revealOnScroll() {
-            const reveals = document.querySelectorAll('.reveal');
-            const windowHeight = window.innerHeight;
-            const elementVisible = 100;
-
-            reveals.forEach(reveal => {
-                const elementTop = reveal.getBoundingClientRect().top;
-                if (elementTop < windowHeight - elementVisible) {
-                    reveal.classList.add('visible');
-                }
-            });
-        }
-
-        window.addEventListener('scroll', revealOnScroll);
-        window.addEventListener('load', revealOnScroll);
     </script>
 </body>
 </html>
