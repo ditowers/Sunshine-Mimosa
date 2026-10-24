@@ -376,6 +376,7 @@
         .np {
             position: fixed; inset: 0;
             z-index: 200;
+            background: #0b0b0c;
             transform: translateY(102%);
             transition: transform 0.42s cubic-bezier(0.32, 0.72, 0.24, 1), visibility 0s linear 0.42s;
             visibility: hidden;
@@ -572,9 +573,9 @@
         // ===== DATOS DE TRACKS (estructurado) =====
         // Para activar un track "soon": pon su src y quita soon:true. Nada más.
         const tracks = [
-            { src: 'track1_como_fue.wav',       name: 'Como Fue Bb?',    artist: 'DiTowers', tag: 'Preview 30s', durLabel: '0:30', cover: 'cover-como-fue.jpg' },
-            { src: 'track2_sunshine.wav',       name: 'Sunshine Mimosa', artist: 'DiTowers', tag: 'Preview 30s', durLabel: '0:30', cover: 'cover-sunshine-mimosa.jpg' },
-            { src: 'track3_termine.wav',        name: 'Terminé Así',     artist: 'DiTowers', tag: 'Preview 30s', durLabel: '0:30', cover: 'cover-termine-asi.jpg' },
+            { src: 'track1_como_fue.mp3',       name: 'Como Fue Bb?',    artist: 'DiTowers', tag: 'Preview 30s', durLabel: '0:30', cover: 'cover-como-fue.jpg' },
+            { src: 'track2_sunshine.mp3',       name: 'Sunshine Mimosa', artist: 'DiTowers', tag: 'Preview 30s', durLabel: '0:30', cover: 'cover-sunshine-mimosa.jpg' },
+            { src: 'track3_termine.mp3',        name: 'Terminé Así',     artist: 'DiTowers', tag: 'Preview 30s', durLabel: '0:30', cover: 'cover-termine-asi.jpg' },
             { src: 'track4_no_me_lo_esperaba.mp3', name: 'No Me Lo Esperaba', artist: 'DiTowers', tag: '', durLabel: '2:24', cover: 'cover-no-me-lo-esperaba.jpg' }
         ];
 
@@ -807,7 +808,9 @@
             artistEl.textContent = t.artist + (t.tag ? ' · ' + t.tag : '');
             playerCoverEl.src = t.cover;
             npCoverEl.src = t.cover;
-            npBgEl.style.backgroundImage = 'url("' + t.cover + '")';
+            const npPreload = new Image();
+            npPreload.onload = () => { npBgEl.style.backgroundImage = 'url("' + t.cover + '")'; };
+            npPreload.src = t.cover;
             npNameEl.textContent = t.name;
             npArtistEl.textContent = t.artist + (t.tag ? ' · ' + t.tag : '');
             npTimeCurrentEl.textContent = '0:00';
@@ -902,6 +905,7 @@
         });
         audio.addEventListener('waiting', () => setLoading(true));
         audio.addEventListener('canplay', () => setLoading(false));
+        audio.addEventListener('loadeddata', () => setLoading(false));
         audio.addEventListener('playing', () => setLoading(false));
         audio.addEventListener('ended', () => {
             render();
