@@ -8,13 +8,16 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
-            --bg: #f7f7f5;
-            --ink: #111111;
-            --ink-soft: #6b6b6b;
-            --ink-faint: #a3a3a3;
-            --line: #e5e5e1;
-            --hover: #efefec;
-            --active: #ececea;
+            --bg: #0e0e0f;
+            --panel: #17171a;
+            --ink: #f5f5f2;
+            --ink-soft: #a7a7ab;
+            --ink-faint: #7e7e84;
+            --line: #26262b;
+            --hover: #1a1a1e;
+            --active: #202025;
+            --accent: #ffb43a;
+            --placeholder: #232327;
         }
 
         html { scroll-behavior: smooth; }
@@ -73,7 +76,7 @@
             border-radius: 6px;
             object-fit: cover;
             display: block;
-            background: #e9e9e5;
+            background: var(--placeholder);
         }
 
         .project-info { min-width: 0; padding-bottom: 4px; }
@@ -131,6 +134,7 @@
 
         .track-row:hover { background: var(--hover); }
         .track-row.active { background: var(--active); }
+        .track-row.active .track-name { color: var(--accent); }
 
         .track-num {
             width: 22px;
@@ -148,7 +152,7 @@
         .eq { display: none; align-items: flex-end; gap: 2.5px; height: 13px; }
         .eq i {
             width: 3px; height: 100%;
-            background: var(--ink);
+            background: var(--accent);
             border-radius: 1px;
             transform-origin: bottom;
             animation: eqBounce 0.9s ease-in-out infinite;
@@ -170,7 +174,7 @@
             border-radius: 4px;
             object-fit: cover;
             flex-shrink: 0;
-            background: #e9e9e5;
+            background: var(--placeholder);
         }
 
         .track-main { flex: 1; min-width: 0; }
@@ -219,21 +223,22 @@
             padding: 11px 14px;
             font: inherit; font-size: 0.9rem;
             color: var(--ink);
-            background: #fff;
+            background: var(--panel);
             border: 1px solid var(--line);
             border-radius: 8px;
             outline: none;
         }
+        .newsletter input::placeholder { color: var(--ink-faint); }
         .newsletter input:focus { border-color: var(--ink-faint); }
         .newsletter button {
             padding: 11px 18px;
             font: inherit; font-size: 0.85rem; font-weight: 600;
-            color: #fff; background: var(--ink);
+            color: #111113; background: var(--ink);
             border: none; border-radius: 8px;
             cursor: pointer;
         }
         .form-message { margin-top: 14px; padding: 12px 14px; border-radius: 8px; font-size: 0.85rem; display: none; }
-        .form-message.success { display: block; background: #e9f6ee; border: 1px solid #bfe6cd; color: #1d7a41; }
+        .form-message.success { display: block; background: rgba(34, 140, 74, 0.16); border: 1px solid rgba(74, 205, 127, 0.45); color: #7be2a0; }
 
         footer {
             max-width: 920px;
@@ -248,7 +253,7 @@
         .player {
             position: fixed;
             left: 0; right: 0; bottom: 0;
-            background: rgba(255, 255, 255, 0.92);
+            background: rgba(23, 23, 26, 0.92);
             backdrop-filter: blur(14px);
             -webkit-backdrop-filter: blur(14px);
             border-top: 1px solid var(--line);
@@ -286,7 +291,7 @@
         .progress-fill {
             position: absolute; left: 0;
             height: 3px; width: 0%;
-            background: var(--ink);
+            background: var(--accent);
             border-radius: 2px;
             pointer-events: none;
         }
@@ -316,7 +321,7 @@
             border-radius: 5px;
             object-fit: cover;
             flex-shrink: 0;
-            background: #e9e9e5;
+            background: var(--placeholder);
             display: block;
         }
 
@@ -347,9 +352,9 @@
         .ctl-btn.main {
             width: 46px; height: 46px;
             background: var(--ink);
-            color: #fff;
+            color: #111113;
         }
-        .ctl-btn.main:hover { background: #000; transform: scale(1.04); }
+        .ctl-btn.main:hover { background: #ffffff; transform: scale(1.04); }
         .ctl-btn.main svg { width: 20px; height: 20px; }
 
         .ctl-btn.stop { border: 1.5px solid var(--ink); }
@@ -359,8 +364,8 @@
         .ctl-btn.loading::after {
             content: '';
             position: absolute; inset: 11px;
-            border: 2.5px solid rgba(255,255,255,0.3);
-            border-top-color: #fff;
+            border: 2.5px solid rgba(0,0,0,0.25);
+            border-top-color: #111113;
             border-radius: 50%;
             animation: spinRing 0.7s linear infinite;
         }
