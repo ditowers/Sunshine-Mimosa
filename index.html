@@ -371,6 +371,78 @@
         }
         @keyframes spinRing { to { transform: rotate(360deg); } }
 
+        /* ===== NOW PLAYING EXPANDIDO (flow untitled) ===== */
+        .player-cover, .player-info { cursor: pointer; }
+        .np {
+            position: fixed; inset: 0;
+            z-index: 200;
+            transform: translateY(102%);
+            transition: transform 0.42s cubic-bezier(0.32, 0.72, 0.24, 1), visibility 0s linear 0.42s;
+            visibility: hidden;
+        }
+        .np.open { transform: translateY(0); visibility: visible; transition: transform 0.42s cubic-bezier(0.32, 0.72, 0.24, 1); }
+        .np-bg {
+            position: absolute; inset: 0;
+            background-size: cover; background-position: center;
+            filter: blur(46px) brightness(0.38);
+            transform: scale(1.25);
+        }
+        .np-shade { position: absolute; inset: 0; background: rgba(10, 10, 11, 0.45); }
+        .np-inner {
+            position: relative;
+            height: 100%;
+            max-width: 560px;
+            margin: 0 auto;
+            padding: 18px 26px 34px;
+            display: flex; flex-direction: column; align-items: center;
+        }
+        .np-top {
+            width: 100%;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .np-album { font-size: 0.78rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-soft); }
+        .np-close {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: rgba(255,255,255,0.08); border: none; color: var(--ink);
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+        }
+        .np-close svg { width: 20px; height: 20px; fill: currentColor; display: block; }
+        .np-top-spacer { width: 40px; }
+        .np-cover {
+            width: min(74vw, 400px); height: min(74vw, 400px);
+            border-radius: 10px; object-fit: cover;
+            box-shadow: 0 24px 60px rgba(0,0,0,0.55);
+            margin: auto 0 0;
+            transform: scale(0.94);
+            transition: transform 0.45s cubic-bezier(0.32, 0.72, 0.24, 1);
+            background: var(--placeholder);
+            display: block;
+        }
+        .np.playing .np-cover { transform: scale(1); }
+        .np-name { font-size: 1.45rem; font-weight: 700; text-align: center; margin-top: 22px; }
+        .np-artist { font-size: 1rem; color: var(--ink-soft); text-align: center; margin-top: 3px; }
+        .np-progress {
+            width: 100%;
+            display: flex; align-items: center; gap: 12px;
+            margin-top: 26px;
+            font-size: 0.75rem; color: var(--ink-faint);
+            font-variant-numeric: tabular-nums;
+        }
+        .np-bar { height: 22px; }
+        .np-bar::before { height: 4px; }
+        .np-bar .progress-fill { height: 4px; }
+        .np-bar .progress-knob { width: 13px; height: 13px; opacity: 1; }
+        .np-controls {
+            display: flex; align-items: center; justify-content: center; gap: 14px;
+            margin-top: 20px;
+        }
+        .np-controls .ctl-btn { width: 54px; height: 54px; }
+        .np-controls .ctl-btn svg { width: 26px; height: 26px; }
+        .np-controls .ctl-btn.main { width: 72px; height: 72px; }
+        .np-controls .ctl-btn.main svg { width: 30px; height: 30px; }
+        .np-controls .ctl-btn.stop svg { width: 19px; height: 19px; }
+        .np-controls .ctl-btn.loading::after { inset: 24px; }
+
         /* ===== LLUVIA DE EMOJIS (por track, se mantiene) ===== */
         .emoji-rain {
             position: fixed;
@@ -462,6 +534,36 @@
                 <button class="ctl-btn main" id="playPauseBtn" aria-label="Play/Pause"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></button>
                 <button class="ctl-btn stop" id="stopBtn" aria-label="Detener (Stop)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10v10H7z"/></svg></button>
                 <button class="ctl-btn" id="nextBtn" aria-label="Siguiente"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 5h2v14h-2zM4 5v14l10.5-7z"/></svg></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== NOW PLAYING EXPANDIDO ===== -->
+    <div class="np" id="nowPlaying" aria-hidden="true">
+        <div class="np-bg" id="npBg"></div>
+        <div class="np-shade"></div>
+        <div class="np-inner">
+            <div class="np-top">
+                <button class="np-close" id="npClose" aria-label="Cerrar reproductor"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16l-6-6 1.4-1.4L12 13.2l4.6-4.6L18 10z"/></svg></button>
+                <span class="np-album">Sunshine Mimosa</span>
+                <span class="np-top-spacer"></span>
+            </div>
+            <img class="np-cover" id="npCover" src="cover.jpg" alt="Portada del track">
+            <div class="np-name" id="npTrackName">Selecciona un track</div>
+            <div class="np-artist" id="npTrackArtist">DiTowers</div>
+            <div class="np-progress">
+                <span id="npTimeCurrent">0:00</span>
+                <div class="progress-bar np-bar" id="npProgressBar" role="slider" aria-label="Progreso" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                    <div class="progress-fill" id="npProgressFill"></div>
+                    <div class="progress-knob" id="npProgressKnob"></div>
+                </div>
+                <span id="npTimeDuration">0:00</span>
+            </div>
+            <div class="np-controls">
+                <button class="ctl-btn" id="npPrevBtn" aria-label="Anterior"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h2v14H6zM20 5v14L9.5 12z"/></svg></button>
+                <button class="ctl-btn main" id="npPlayPauseBtn" aria-label="Play/Pause"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></button>
+                <button class="ctl-btn stop" id="npStopBtn" aria-label="Detener (Stop)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10v10H7z"/></svg></button>
+                <button class="ctl-btn" id="npNextBtn" aria-label="Siguiente"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 5h2v14h-2zM4 5v14l10.5-7z"/></svg></button>
             </div>
         </div>
     </div>
@@ -595,6 +697,21 @@
         const progressKnob  = document.getElementById('progressKnob');
         const timeCurrentEl = document.getElementById('timeCurrent');
         const timeDurationEl= document.getElementById('timeDuration');
+        const npEl          = document.getElementById('nowPlaying');
+        const npBgEl        = document.getElementById('npBg');
+        const npCoverEl     = document.getElementById('npCover');
+        const npNameEl      = document.getElementById('npTrackName');
+        const npArtistEl    = document.getElementById('npTrackArtist');
+        const npPlayPauseBtn= document.getElementById('npPlayPauseBtn');
+        const npPrevBtn     = document.getElementById('npPrevBtn');
+        const npNextBtn     = document.getElementById('npNextBtn');
+        const npStopBtn     = document.getElementById('npStopBtn');
+        const npCloseBtn    = document.getElementById('npClose');
+        const npProgressBar = document.getElementById('npProgressBar');
+        const npProgressFill= document.getElementById('npProgressFill');
+        const npProgressKnob= document.getElementById('npProgressKnob');
+        const npTimeCurrentEl  = document.getElementById('npTimeCurrent');
+        const npTimeDurationEl = document.getElementById('npTimeDuration');
 
         function fmt(t) {
             if (!isFinite(t) || t < 0) t = 0;
@@ -612,6 +729,11 @@
             progressBar.setAttribute('aria-valuenow', Math.round(pct));
             timeCurrentEl.textContent = fmt(cur);
             if (isFinite(dur) && dur > 0) timeDurationEl.textContent = fmt(dur);
+            npProgressFill.style.width = pct + '%';
+            npProgressKnob.style.left = pct + '%';
+            npProgressBar.setAttribute('aria-valuenow', Math.round(pct));
+            npTimeCurrentEl.textContent = fmt(cur);
+            if (isFinite(dur) && dur > 0) npTimeDurationEl.textContent = fmt(dur);
         }
 
         function rafLoop() {
@@ -633,6 +755,8 @@
         function syncUI() {
             const playing = !audio.paused && !audio.ended;
             playPauseBtn.innerHTML = playing ? ICON_PAUSE : ICON_PLAY;
+            npPlayPauseBtn.innerHTML = playing ? ICON_PAUSE : ICON_PLAY;
+            npEl.classList.toggle('playing', playing);
             rowEls.forEach((row, i) => {
                 row.classList.toggle('active', i === currentIndex);
                 row.classList.toggle('playing', i === currentIndex && playing);
@@ -641,6 +765,7 @@
 
         function setLoading(on) {
             playPauseBtn.classList.toggle('loading', on);
+            npPlayPauseBtn.classList.toggle('loading', on);
         }
 
         function updateMediaSession() {
@@ -681,6 +806,14 @@
             trackNameEl.textContent = t.name;
             artistEl.textContent = t.artist + (t.tag ? ' · ' + t.tag : '');
             playerCoverEl.src = t.cover;
+            npCoverEl.src = t.cover;
+            npBgEl.style.backgroundImage = 'url("' + t.cover + '")';
+            npNameEl.textContent = t.name;
+            npArtistEl.textContent = t.artist + (t.tag ? ' · ' + t.tag : '');
+            npTimeCurrentEl.textContent = '0:00';
+            npTimeDurationEl.textContent = t.durLabel;
+            npProgressFill.style.width = '0%';
+            npProgressKnob.style.left = '0%';
             timeCurrentEl.textContent = '0:00';
             timeDurationEl.textContent = t.durLabel;
             progressFill.style.width = '0%';
@@ -784,6 +917,7 @@
             setLoading(false);
             if (currentIndex >= 0) {
                 trackNameEl.textContent = 'Error al cargar el audio';
+                npNameEl.textContent = 'Error al cargar el audio';
             }
             syncUI();
         });
@@ -811,9 +945,9 @@
             });
         });
 
-        // --- Seek: clic o arrastre sobre la barra ---
-        function seekToEvent(e) {
-            const rect = progressBar.getBoundingClientRect();
+        // --- Seek: clic o arrastre sobre la barra (mini y expandido) ---
+        function seekToEvent(e, bar) {
+            const rect = bar.getBoundingClientRect();
             const frac = Math.min(Math.max((e.clientX - rect.left) / rect.width, 0), 1);
             if (isFinite(audio.duration) && audio.duration > 0) {
                 audio.currentTime = frac * audio.duration;
@@ -821,17 +955,44 @@
             }
         }
 
-        progressBar.addEventListener('pointerdown', (e) => {
-            if (currentIndex < 0) return;
-            seeking = true;
-            try { progressBar.setPointerCapture(e.pointerId); } catch (_) {}
-            seekToEvent(e);
-        });
-        progressBar.addEventListener('pointermove', (e) => {
-            if (seeking) seekToEvent(e);
-        });
-        progressBar.addEventListener('pointerup', () => { seeking = false; });
-        progressBar.addEventListener('pointercancel', () => { seeking = false; });
+        function attachSeek(bar) {
+            let active = false;
+            bar.addEventListener('pointerdown', (e) => {
+                if (currentIndex < 0) return;
+                active = true;
+                seeking = true;
+                try { bar.setPointerCapture(e.pointerId); } catch (_) {}
+                seekToEvent(e, bar);
+            });
+            bar.addEventListener('pointermove', (e) => {
+                if (active) seekToEvent(e, bar);
+            });
+            const endSeek = () => { active = false; seeking = false; };
+            bar.addEventListener('pointerup', endSeek);
+            bar.addEventListener('pointercancel', endSeek);
+        }
+        attachSeek(progressBar);
+        attachSeek(npProgressBar);
+
+        // --- Now Playing expandido: abrir/cerrar y controles espejo ---
+        function openNP() {
+            npEl.classList.add('open');
+            npEl.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeNP() {
+            npEl.classList.remove('open');
+            npEl.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+        }
+        playerCoverEl.addEventListener('click', openNP);
+        document.querySelector('.player-info').addEventListener('click', openNP);
+        npCloseBtn.addEventListener('click', closeNP);
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeNP(); });
+        npPlayPauseBtn.addEventListener('click', togglePlay);
+        npStopBtn.addEventListener('click', stopPlayback);
+        npNextBtn.addEventListener('click', () => nextTrack(false));
+        npPrevBtn.addEventListener('click', prevTrack);
 
         // --- Media Session ---
         if ('mediaSession' in navigator) {
