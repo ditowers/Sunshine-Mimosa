@@ -118,6 +118,39 @@
             margin-top: 14px;
         }
 
+        /* ===== SOCIAL BUTTONS ===== */
+        .social-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .social-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 16px;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            background: var(--panel);
+            color: var(--ink);
+            font-size: 0.88rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: transform .15s ease, border-color .15s ease, color .15s ease;
+        }
+
+        .social-btn svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+        .social-btn:hover { transform: translateY(-2px); }
+        .social-btn.ig:hover { border-color: #e1306c; color: #e1306c; }
+        .social-btn.yt:hover { border-color: #ff0000; color: #ff0000; }
+        .social-btn.sp:hover { border-color: #1db954; color: #1db954; }
+        .social-btn.am:hover { border-color: #fa57c1; color: #fa57c1; }
+
+        .social-btn:active { transform: translateY(0); }
+
         /* ===== TRACKLIST ===== */
         .tracklist { border-top: 1px solid var(--line); }
 
@@ -493,6 +526,24 @@
                 <div class="project-artist">DiTowers</div>
                 <div class="project-meta">4 tracks</div>
                 <p class="project-desc">Una experiencia musical nacida de las vivencias y el alma de DiTowers. Donde cada nota cuenta una historia de sol y vida.</p>
+                <div class="social-row" aria-label="Sígueme en">
+                    <a class="social-btn ig" href="https://www.instagram.com/ditowerspr/" target="_blank" rel="noopener" aria-label="Instagram de DiTowers">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg>
+                        <span>Instagram</span>
+                    </a>
+                    <a class="social-btn yt" href="https://www.youtube.com/@ditowers" target="_blank" rel="noopener" aria-label="YouTube de DiTowers">
+                        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.6 7.2a2.8 2.8 0 0 0-2-2C17.9 4.8 12 4.8 12 4.8s-5.9 0-7.6.4a2.8 2.8 0 0 0-2 2A29 29 0 0 0 2 12a29 29 0 0 0 .4 4.8 2.8 2.8 0 0 0 2 2c1.7.4 7.6.4 7.6.4s5.9 0 7.6-.4a2.8 2.8 0 0 0 2-2A29 29 0 0 0 22 12a29 29 0 0 0-.4-4.8zM10 15.2V8.8L15.5 12 10 15.2z"/></svg>
+                        <span>YouTube</span>
+                    </a>
+                    <a class="social-btn sp" href="https://open.spotify.com/artist/1PRwAKOrbziTPMks2CbDh3" target="_blank" rel="noopener" aria-label="Spotify de DiTowers">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M7.2 9.3c3.2-.9 6.4-.6 9.3 1.1"/><path d="M7.6 12.8c2.7-.7 5.3-.4 7.9 1"/><path d="M8 16.1c2.2-.5 4.3-.2 6.4.8"/></svg>
+                        <span>Spotify</span>
+                    </a>
+                    <a class="social-btn am" href="https://music.apple.com/us/artist/ditowers/1511271918" target="_blank" rel="noopener" aria-label="Apple Music de DiTowers">
+                        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+                        <span>Apple Music</span>
+                    </a>
+                </div>
             </div>
         </section>
 
