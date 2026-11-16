@@ -273,6 +273,79 @@
         .form-message { margin-top: 14px; padding: 12px 14px; border-radius: 8px; font-size: 0.85rem; display: none; }
         .form-message.success { display: block; background: rgba(34, 140, 74, 0.16); border: 1px solid rgba(74, 205, 127, 0.45); color: #7be2a0; }
 
+        /* ===== BEATMAKERS ===== */
+        .beatmakers {
+            padding: 48px 0 8px;
+            border-top: 1px solid var(--line);
+            margin-top: 48px;
+            max-width: 520px;
+        }
+        .beatmakers h2 { font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
+        .beatmakers p { font-size: 0.88rem; color: var(--ink-soft); line-height: 1.6; margin-bottom: 16px; }
+        .beat-form { display: grid; gap: 10px; }
+        .beat-form input,
+        .beat-form textarea {
+            padding: 11px 14px;
+            font: inherit; font-size: 0.9rem;
+            color: var(--ink);
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            outline: none;
+            width: 100%;
+        }
+        .beat-form textarea { min-height: 84px; resize: vertical; }
+        .beat-form input::placeholder,
+        .beat-form textarea::placeholder { color: var(--ink-faint); }
+        .beat-form input:focus,
+        .beat-form textarea:focus { border-color: var(--ink-faint); }
+        .beat-form button {
+            padding: 12px 18px;
+            font: inherit; font-size: 0.9rem; font-weight: 600;
+            color: #111113; background: var(--accent);
+            border: none; border-radius: 8px;
+            cursor: pointer;
+        }
+        .beat-form button:hover { filter: brightness(1.08); }
+        .beat-note { font-size: 0.8rem !important; color: var(--ink-faint) !important; margin-top: 12px; line-height: 1.5; }
+
+        /* ===== SITE FOOTER ===== */
+        .site-footer-grid {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr 1.2fr 1.2fr;
+            gap: 32px;
+            text-align: left;
+        }
+        .site-footer-grid h3 {
+            font-size: 0.8rem; font-weight: 700;
+            letter-spacing: 0.12em; text-transform: uppercase;
+            color: var(--ink);
+            margin-bottom: 12px;
+        }
+        .site-footer-grid p,
+        .site-footer-grid li {
+            font-size: 0.86rem; line-height: 1.65;
+            color: var(--ink-soft);
+        }
+        .site-footer-grid ul { list-style: none; }
+        .site-footer-grid li { margin-bottom: 8px; }
+        .site-footer-grid a { color: var(--ink-soft); text-decoration: none; }
+        .site-footer-grid a:hover { color: var(--ink); text-decoration: underline; }
+        .foot-copy {
+            margin-top: 32px;
+            padding-top: 18px;
+            border-top: 1px solid var(--line);
+            font-size: 0.75rem;
+            color: var(--ink-faint);
+            letter-spacing: 0.04em;
+        }
+        @media (max-width: 720px) {
+            .site-footer-grid { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 480px) {
+            .site-footer-grid { grid-template-columns: 1fr; }
+        }
+
         footer {
             max-width: 920px;
             margin: 0 auto;
@@ -551,7 +624,7 @@
         <section class="tracklist" id="tracklist" aria-label="Lista de canciones"></section>
 
         <!-- ===== NEWSLETTER (Brevo, se mantiene) ===== -->
-        <section class="newsletter">
+        <section class="newsletter" id="newsletter">
             <h2>Únete a la experiencia</h2>
             <p>Registra tu email para recibir noticias exclusivas, contenido detrás de cámaras y próximos lanzamientos de DiTowers.</p>
             <form action="https://3e6f249b.sibforms.com/serve/MUIFABUpmOijhVTFHG7eeP4g-S8l0U29xEEqEKmmkUpsO_SnJSttwUWAwjnYA6eHc9cVeqworfGKkD8XVQqcsZGCjE8nJfnSLF3dw6S_Ioih0CFzV7be9HcheO5ltHoJtjphOfGJ1MJMfvoMVkc-NA1F9FMMfTSrrgXlMo0LAYPcvQf4jRSl5iTMWd3WnaQQ21nV7n10EoDDH-Oezw=="
@@ -562,9 +635,54 @@
             <iframe name="sib-hidden-frame" title="Brevo" style="display:none;width:0;height:0;border:0" aria-hidden="true"></iframe>
             <div class="form-message" id="formMessage"></div>
         </section>
+
+        <!-- ===== BEATMAKERS ===== -->
+        <section class="beatmakers" id="beatmakers">
+            <h2>¿Eres beatmaker?</h2>
+            <p>Envíame tus pistas. Si me gusta, la usamos pa' un tema de DiTowers y te doy el crédito.</p>
+            <form class="beat-form" id="beat-form" onsubmit="handleBeatSubmit(event)">
+                <input type="text" id="beat-name" placeholder="Tu nombre" required>
+                <input type="text" id="beat-contact" placeholder="Tu email o Instagram" required>
+                <input type="text" id="beat-link" inputmode="url" placeholder="Link de la pista (YouTube, Drive, SoundCloud…)" required>
+                <input type="text" id="beat-genre" placeholder="Género / BPM (ej. Trap, 140 BPM)">
+                <textarea id="beat-msg" placeholder="Mensaje (opcional)"></textarea>
+                <button type="submit">Enviar pista</button>
+            </form>
+            <p class="beat-note">Al enviar se abre tu app de correo con todo listo pa' enviármela a sototorressebas@yahoo.com. Si prefieres, escríbeme directo a ese email.</p>
+            <div class="form-message" id="beatMessage"></div>
+        </section>
     </main>
 
-    <footer>© 2026 DiTowers · Sunshine Mimosa · Todos los derechos reservados</footer>
+    <footer>
+        <div class="site-footer-grid">
+            <div>
+                <h3>DiTowers</h3>
+                <p>R&amp;B romántico, trap y Detroit desde Las Piedras, Puerto Rico. Tag: D-Towers, baby.</p>
+            </div>
+            <div>
+                <h3>Explora</h3>
+                <ul>
+                    <li><a href="#tracklist">Canciones</a></li>
+                    <li><a href="#newsletter">Únete</a></li>
+                    <li><a href="#beatmakers">Envía tu pista</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3>Contacto</h3>
+                <ul>
+                    <li><a href="mailto:sototorressebas@yahoo.com">sototorressebas@yahoo.com</a></li>
+                    <li>Contrataciones y shows</li>
+                    <li>Próximo show: KAOS, Ponce — sáb 19 dic 2026</li>
+                </ul>
+            </div>
+            <div>
+                <h3>Beatmakers</h3>
+                <p>¿Tienes pistas? Envíame tu mejor beat y si conecta, lo grabamos con tu crédito.</p>
+                <p><a href="#beatmakers">Enviar una pista →</a></p>
+            </div>
+        </div>
+        <div class="foot-copy">© 2026 DiTowers · Sunshine Mimosa · Todos los derechos reservados</div>
+    </footer>
 
     <!-- ===== PLAYER BAR ===== -->
     <div class="player" id="audioPlayer">
@@ -1068,6 +1186,28 @@
                 if (emailInput) emailInput.value = '';
             }, 100);
             // El formulario se envía a Brevo en un iframe oculto (sin salir de la página)
+        }
+
+        // ===== BEATMAKER FORM (mailto, sin backend) =====
+        function handleBeatSubmit(event) {
+            event.preventDefault();
+            const name = document.getElementById('beat-name').value.trim();
+            const contact = document.getElementById('beat-contact').value.trim();
+            const link = document.getElementById('beat-link').value.trim();
+            const genre = document.getElementById('beat-genre').value.trim();
+            const msg = document.getElementById('beat-msg').value.trim();
+            const subject = encodeURIComponent('Pista para DiTowers — ' + name);
+            const body = encodeURIComponent(
+                'Nombre: ' + name + '\n' +
+                'Contacto: ' + contact + '\n' +
+                'Link de la pista: ' + link + '\n' +
+                'Género / BPM: ' + (genre || '—') + '\n' +
+                'Mensaje: ' + (msg || '—')
+            );
+            const messageEl = document.getElementById('beatMessage');
+            messageEl.textContent = '¡Listo! Se abrió tu app de correo con la pista lista pa\' enviar. Si no se abrió, escríbeme directo a sototorressebas@yahoo.com.';
+            messageEl.className = 'form-message success';
+            window.location.href = 'mailto:sototorressebas@yahoo.com?subject=' + subject + '&body=' + body;
         }
     </script>
 </body>
